@@ -56,7 +56,7 @@ Radar_Error Radar_GetObjectSpeedData(Radar_PredictionData_t *pPredictionData, M0
 	 	pPredictionData -> SpeedData.DeltaX = data.obj_distance_R - pPredictionData -> SpeedData.InitialDistance;
 		pPredictionData -> SpeedData.InitialDistance = data.obj_distance_R;
 
-		pPredictionData -> SpeedData.DeltaV = pPredictionData -> SpeedData.DeltaV - pPredictionData -> SpeedData.InitialSpeed;
+		pPredictionData -> SpeedData.DeltaV = pPredictionData -> SpeedData.DeltaX - pPredictionData -> SpeedData.InitialSpeed;
 		pPredictionData -> SpeedData.InitialSpeed = pPredictionData -> SpeedData.DeltaX;
 	}
 
