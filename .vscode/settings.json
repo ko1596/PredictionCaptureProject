@@ -1,8 +1,0 @@
-{
-    "files.associations": {
-        "m0all_header.h": "c",
-        "preshooting.h": "c",
-        "stdlib.h": "c"
-    },
-    "C_Cpp.errorSquiggles": "Enabled"
-}
