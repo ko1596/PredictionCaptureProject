@@ -145,29 +145,20 @@ int main(int argc, char *argv[])
 
    
     printf("FOR Test!!!\n");
-	sleep(2);
-	while(1)
+	sleep(2); //wait for lader load
+
+	while(Status==RADAR_ERROR_NONE) //main loop
  	{
-
-        if(Status==RADAR_ERROR_NONE){
-
-			Status = Radar_GetObjectSpeedData(pPredictionDataA, M0_radarA.data);
-			Status = Radar_GetObjectStatus(pPredictionDataA);
-			Status = Radar_PrintData(pPredictionDataA, M0_radarA.data);
-			Status = Radar_GetObjectSpeedData(pPredictionDataB, M0_radarB.data);
-			Status = Radar_GetObjectStatus(pPredictionDataB);
-			Status = Radar_PrintData(pPredictionDataB, M0_radarB.data);
-
-		}
-		else{
-			printf("Error code: %d\n\r", Status );
-			break;
-		}
+        Status = Radar_GetObjectSpeedData(pPredictionDataA, M0_radarA.data);
+		Status = Radar_GetObjectStatus(pPredictionDataA);
+		Status = Radar_PrintData(pPredictionDataA, M0_radarA.data);
+		Status = Radar_GetObjectSpeedData(pPredictionDataB, M0_radarB.data);
+		Status = Radar_GetObjectStatus(pPredictionDataB);
+		Status = Radar_PrintData(pPredictionDataB, M0_radarB.data);
         sleep(1);
-
 	}
 
- 	
+ 	printf("Error code: %d\n\r", Status );
 	return 0;
 }
 

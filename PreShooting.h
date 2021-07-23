@@ -22,6 +22,8 @@
 #define   INT16      int16_t
 #define   INT32      int32_t
 
+#define PRINTLF(LF) printf("--------------------------#LF--------------------------\n\r")
+
 /** @defgroup Radar_define_Error_group Error and Warning code returned by API
  *  The following DEFINE are used to identify the PAL ERROR
  *  @{
@@ -32,6 +34,7 @@ typedef int8_t Radar_Error;
 #define RADAR_ERROR_INVALID_STATU               ((Radar_Error) - 1)       /*!< Warning invalid status*/
 #define RADAR_ERROR_FILE_NOT_EXIST              ((Radar_Error) - 2)       /*!< The file not exist when opening file*/
 #define RADAR_ERROR_WORNG_DISTANCE              ((Radar_Error) - 3)       /*!< The X and Y distance equal 0*/
+
 /** @} Radar_define_Error_group */
 
 
@@ -64,7 +67,7 @@ typedef int8_t Radar_ObjectAreaStatus;
  * @brief   One Speed measurement data for each target.
  *
  */
-typedef struct 
+typedef struct Radar_ObjectSpeedData_t
 {
   INT16 InitialDistance;
     /*!< Distance from the beginning (10cm)*/
@@ -81,7 +84,7 @@ typedef struct
  * 
  * @brief Structure for storing the set of prediction results
  */
-typedef struct 
+typedef struct Radar_PredictionData_t
 {
   Radar_ObjectSpeedData_t SpeedData;       /*!< all possible prediction status mode*/
   Radar_PredictionStatus Status;           /*!< One Speed measurement data for each target.*/

@@ -72,17 +72,20 @@ Radar_Error Radar_TakePicture(void)
 	if (access(path, F_OK) == -1)
 		Status = RADAR_ERROR_FILE_NOT_EXIST;
 
-	bzero(sysCmdBuf, 256);
-	sprintf(sysCmdBuf, path);
-	system(sysCmdBuf);
-	usleep(20000);
+	if(Status == RADAR_ERROR_NONE){
+		bzero(sysCmdBuf, 256);
+		sprintf(sysCmdBuf, path);
+		system(sysCmdBuf);
+		usleep(20000);
+	}
 
 	return Status;
 }
 
 Radar_Error Radar_PrintData(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data){
 	Radar_Error Status = RADAR_ERROR_NONE;
-	data.L_R ? printf("--------------------------LEFT--------------------------\n\r") : printf("-------------------------RIGHT--------------------------\n\r");
+
+	data.L_R ? PRINTLF(LEFT) : PRINTLF(RIGHT);		//PRINTLF(LF) printf("--------------------------#LF--------------------------\n\r")
 
 	printf("initX: %3d\tDeltaX: %2d\n\rinitV: %3d\tDeltaV: %2d\n\rStatus: %1d\n\rDistance: %3d\n\r",
 		pPredictionData ->SpeedData.InitialDistance,
