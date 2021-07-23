@@ -1,0 +1,27 @@
+{
+    "jsonver": 2,
+    "name": "202101121800",
+    "createtime": "201911181352",
+    "modifytime": "20200708160816",
+    "effectivetime": "20191122",
+    "baynum": 2,
+    "meterposition": 1,
+    "bayenable": [
+        1,
+        1
+    ],
+    "spacenum": [
+        "S002",
+        "S001"
+    ],
+    "takephotoroutine": 0,
+    "logenable": 1,
+    "Params1": "{\"rb60p1\":[30,30,370,180,115,65,0,0],\"rb60p2\":[30,30,370,180,115,65,0,1]}",
+    "Params2": "{\"epd\":\"v1.3.2.3\"}",
+    "otherfw": "{\"radar1\":\"2.0.2.8\",\"radar2\":\"2.0.2.8\"}",
+    "grace": [
+        600,
+        180
+    ],
+    "stationID": "12"
+}
