@@ -94,9 +94,11 @@ Radar_Error Radar_PrintData(Radar_PredictionData_t *pPredictionData, M0_RADAR_DA
 }
 
 Radar_Error Radar_InitData(Radar_PredictionData_t *pPredictionData){
+	Radar_Error Status = RADAR_ERROR_NONE;
 	pPredictionData->SpeedData.DeltaV=0;
 	pPredictionData->SpeedData.DeltaX=0;
 	pPredictionData->SpeedData.InitialDistance=0;
 	pPredictionData->SpeedData.InitialSpeed=0;
 	pPredictionData->Status=RADAR_PREDICTIONSTATUS_INVALID;
+	return Status;
 }
