@@ -90,17 +90,17 @@ typedef struct
 /**
  * @brief Return the radar status
  *
- * @param   pStatus              Current status of the radar 
- * @param   speedVariation       Object initial speed 
- * @return  RADAR_ERROR_NONE     Success
- * @return  "Other error code"    See ::Radar_Error
+ * @param   pPredictionData               all of the prediction data 
+ * @return  RADAR_ERROR_NONE              Success
+ * @return  "Other error code"            See ::Radar_Error
  */
 Radar_Error Radar_GetObjectStatus(Radar_PredictionData_t *pPredictionData);
 
 /**
  * @brief Return Object Speed Data
  * 
- * @param pObjectSpeedData  speed data
+ * @param pPredictionData                 all of the prediction data 
+ * @param data                            for radar distance
  * @return Radar_Error 
  */
 Radar_Error Radar_GetObjectSpeedData(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data);
@@ -116,11 +116,18 @@ Radar_Error Radar_TakePicture(void);
 /**
  * @brief Print all data of the prediction status and DeltaV and DeltaX
  * 
- * @param pPredictionData all of the prediction data
- * @param data for radar distance
+ * @param pPredictionData    all of the prediction data
+ * @param data               for radar distance
  * @return Radar_Error 
  */
 Radar_Error Radar_PrintData(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data);
 
+/**
+ * @brief Initial all of the data and status
+ * 
+ * @param pPredictionData all of the prediction data
+ * @return Radar_Error 
+ */
+Radar_Error Radar_InitData(Radar_PredictionData_t *pPredictionData);
 #endif  /* PRESHOOTING_H */
 /************************ (C) COPYRIGHT Joey Ke *****END OF FILE****/

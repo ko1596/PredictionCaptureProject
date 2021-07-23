@@ -37,8 +37,12 @@ int main(int argc, char *argv[])
 	Radar_PredictionData_t *pPredictionDataA = &PredictionDataA;
 	Radar_PredictionData_t *pPredictionDataB = &PredictionDataB;
 	Radar_Error Status;
-
 	/* USER CODE END PV */
+
+	/* Initialize all parameters */
+	Status = RADAR_ERROR_NONE;
+	Status = Radar_InitData(pPredictionDataA);
+	Status = Radar_InitData(pPredictionDataB);
     
   	time_t rawtime;
 	struct tm *info;
