@@ -82,6 +82,8 @@ Radar_Error Radar_TakePicture(void)
 
 Radar_Error Radar_PrintData(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data){
 	Radar_Error Status = RADAR_ERROR_NONE;
+	data.L_R ? printf("--------------------------LEFT--------------------------\n\r") : printf("-------------------------RIGHT--------------------------\n\r");
+
 	printf("initX: %3d\tDeltaX: %2d\n\rinitV: %3d\tDeltaV: %2d\n\rStatus: %1d\n\rDistance: %3d\n\r",
 		pPredictionData ->SpeedData.InitialDistance,
 		pPredictionData->SpeedData.DeltaX,
@@ -90,6 +92,7 @@ Radar_Error Radar_PrintData(Radar_PredictionData_t *pPredictionData, M0_RADAR_DA
 		pPredictionData->Status,
 		data.obj_distance_R
 		);
+	printf("--------------------------------------------------------\n\r");
 	return Status;
 }
 
