@@ -1,8 +1,8 @@
 #!/bin/bash
 i=0
-while [ $i != 5]
+while [ $i != 5 ]
 do
-    NOW=$(data +"%Y%m%d%H%M%S")
+    NOW=$(date +"%Y%m%d%H%M%S")
     FILE0="/home/root/$NOW"
 
     echo $FILE0
