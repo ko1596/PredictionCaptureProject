@@ -66,7 +66,7 @@ Radar_Error Radar_GetObjectSpeedData(Radar_PredictionData_t *pPredictionData, M0
 Radar_Error Radar_TakePicture(void)
 {
 	Radar_Error Status = RADAR_ERROR_NONE;
-	const char *path = "./cap.sh";
+	const char *path = "./capture.sh";
 	char sysCmdBuf[256];
 
 	if (access(path, F_OK) == -1)
