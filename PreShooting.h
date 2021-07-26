@@ -45,22 +45,13 @@ typedef int8_t Radar_Error;
 typedef uint8_t Radar_PredictionStatus;
 
 #define RADAR_PREDICTIONSTATUS_COMING        ((Radar_PredictionStatus)  0)
-#define RADAR_PREDICTIONSTATUS_PARKING       ((Radar_PredictionStatus)  1)
-#define RADAR_PREDICTIONSTATUS_PARKED        ((Radar_PredictionStatus)  2)
-#define RADAR_PREDICTIONSTATUS_LEAVING       ((Radar_PredictionStatus)  3)
-#define RADAR_PREDICTIONSTATUS_INVALID       ((Radar_PredictionStatus)  4)
+#define RADAR_PREDICTIONSTATUS_LEAVING       ((Radar_PredictionStatus)  1)
+#define RADAR_PREDICTIONSTATUS_PARKING       ((Radar_PredictionStatus)  3)
+#define RADAR_PREDICTIONSTATUS_PARKED        ((Radar_PredictionStatus)  4)
+#define RADAR_PREDICTIONSTATUS_EMPTY         ((Radar_PredictionStatus)  5)
+#define RADAR_PREDICTIONSTATUS_INVALID       ((Radar_PredictionStatus)  6)
 /** @} Radar_PredictionStatus_group */
 
-
-/** @defgroup Radar_ObjectAreaStatus_group Defines Object in Area Status
- *  Determine whether it is within the area
- *  @{
- */
-typedef int8_t Radar_ObjectAreaStatus;
-
-#define RADAR_OBJECTAREASTATUS_OUT           ((Radar_ObjectAreaStatus)  0)    /*!< Nothing in the area*/
-#define RADAR_OBJECTAREASTATUS_IN            ((Radar_ObjectAreaStatus)  1)    /*!< Something in the area*/
-/** @} Radar_ObjectAreaStatus_group */
 
 /**
  * @struct  Radar_ObjectSpeedData_t
@@ -97,7 +88,7 @@ typedef struct Radar_PredictionData_t
  * @return  RADAR_ERROR_NONE              Success
  * @return  "Other error code"            See ::Radar_Error
  */
-Radar_Error Radar_GetObjectStatus(Radar_PredictionData_t *pPredictionData);
+Radar_Error Radar_GetObjectStatus(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data);
 
 /**
  * @brief Return Object Speed Data

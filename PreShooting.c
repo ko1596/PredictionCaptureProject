@@ -11,34 +11,25 @@
 /* Includes ------------------------------------------------------------------*/
 #include "PreShooting.h"
 
-Radar_Error Radar_GetObjectStatus(Radar_PredictionData_t *pPredictionData)
+Radar_Error Radar_GetObjectStatus(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data)
 {
 	Radar_Error Status = RADAR_ERROR_NONE;
-	Radar_ObjectAreaStatus ObjectAreaStatus = RADAR_OBJECTAREASTATUS_OUT;
-
-	pPredictionData->Status = RADAR_PREDICTIONSTATUS_INVALID;
-
-	if (M0_radarA.data.obj_position_X == 0 && M0_radarA.data.obj_position_Y == 0)
-		Status = RADAR_ERROR_WORNG_DISTANCE;
 
 	if (Status == RADAR_ERROR_NONE)
 	{
-		if (M0_radarA.data.obj_position_X < 500 && M0_radarA.data.obj_position_Y < 280)
-			ObjectAreaStatus = RADAR_OBJECTAREASTATUS_IN;
 
-		if (ObjectAreaStatus == RADAR_OBJECTAREASTATUS_IN)
-		{	
-			if(pPredictionData->SpeedData.DeltaV < -5)
-				pPredictionData->Status = RADAR_PREDICTIONSTATUS_COMING;
-			else if(pPredictionData->SpeedData.DeltaV > 5)
-				pPredictionData->Status = RADAR_PREDICTIONSTATUS_LEAVING;
-			else if(pPredictionData->SpeedData.DeltaV <= 5 && pPredictionData->SpeedData.DeltaV >= -5)
-				pPredictionData->Status = RADAR_PREDICTIONSTATUS_PARKING;
-			else if(M0_radarA.data.obj_type == 1)
-				pPredictionData->Status = RADAR_PREDICTIONSTATUS_PARKED;
-			else
-				pPredictionData->Status = RADAR_PREDICTIONSTATUS_INVALID;
-		}
+		if(data.obj_distance_R == 0)
+			pPredictionData->Status = RADAR_PREDICTIONSTATUS_EMPTY;
+		else if(pPredictionData->SpeedData.DeltaV < -5)
+			pPredictionData->Status = RADAR_PREDICTIONSTATUS_COMING;
+		else if(pPredictionData->SpeedData.DeltaV > 5)
+			pPredictionData->Status = RADAR_PREDICTIONSTATUS_LEAVING;
+		else if(pPredictionData->SpeedData.DeltaV <= 5 && pPredictionData->SpeedData.DeltaV >= -5)
+			pPredictionData->Status = RADAR_PREDICTIONSTATUS_PARKING;
+		else if(M0_radarA.data.obj_type == 1)
+			pPredictionData->Status = RADAR_PREDICTIONSTATUS_PARKED;
+		else
+			pPredictionData->Status = RADAR_PREDICTIONSTATUS_INVALID;
 	}
 
 	return Status;
