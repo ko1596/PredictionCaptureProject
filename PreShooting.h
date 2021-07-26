@@ -22,7 +22,7 @@
 #define   INT16      int16_t
 #define   INT32      int32_t
 
-#define PRINTLF(LF) printf("--------------------------#LF--------------------------\n\r")
+#define PRINTLF(LF) printf("--------------------------%s--------------------------\n\r",#LF)
 
 /** @defgroup Radar_define_Error_group Error and Warning code returned by API
  *  The following DEFINE are used to identify the PAL ERROR

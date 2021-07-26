@@ -5,9 +5,6 @@
  *  
  */
 
-
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
@@ -28,7 +25,6 @@
 #include "Ta5320G_TIMER/m0All_Header.h"
 #include "PreShooting.h"
 
-
 int main(int argc, char *argv[])
 {
 	/* USER CODE BEGIN PV */
@@ -37,17 +33,17 @@ int main(int argc, char *argv[])
 	Radar_PredictionData_t *pPredictionDataA = &PredictionDataA;
 	Radar_PredictionData_t *pPredictionDataB = &PredictionDataB;
 	Radar_Error Status;
+	int target = 0;
 	/* USER CODE END PV */
 
 	/* Initialize all parameters */
 	Status = RADAR_ERROR_NONE;
 	Status = Radar_InitData(pPredictionDataA);
 	Status = Radar_InitData(pPredictionDataB);
-    
-  	time_t rawtime;
+
+	time_t rawtime;
 	struct tm *info;
 	char buffer[80];
-
 
 	time(&rawtime);
 	info = localtime(&rawtime);
@@ -56,16 +52,16 @@ int main(int argc, char *argv[])
 	printf("\n%s\n", buffer);
 
 	fd_uartA53M0 = open(dev_UART_A53M0, O_RDWR | O_NOCTTY | O_NDELAY);
-	if(fd_uartA53M0 == -1)
+	if (fd_uartA53M0 == -1)
 	{
 		printf("[%s] xxxx   open Error   xxxx \n", dev_UART_A53M0);
 		return -1;
 	}
-    else
+	else
 	{
 		printf("[%s] Open Success ============\n", dev_UART_A53M0);
-	
-		if(flock(fd_uartA53M0, LOCK_EX | LOCK_NB) == 0)
+
+		if (flock(fd_uartA53M0, LOCK_EX | LOCK_NB) == 0)
 		{
 			struct termios uart_settings;
 			tcgetattr(fd_uartA53M0, &uart_settings);
@@ -80,7 +76,6 @@ int main(int argc, char *argv[])
 			cfsetispeed(&uart_settings, UARTA53M0_SPEED);
 			cfsetospeed(&uart_settings, UARTA53M0_SPEED);
 			tcsetattr(fd_uartA53M0, TCSANOW, &uart_settings);
-		
 		}
 		else
 		{
@@ -88,7 +83,6 @@ int main(int argc, char *argv[])
 			return -1;
 		}
 	}
-       
 
 	pthread_attr_t attr_Tx, attr_Rx;
 	int policy_Rx;
@@ -98,68 +92,71 @@ int main(int argc, char *argv[])
 
 	pthread_attr_init(&attr_Rx);
 
-   	pthread_create(&thread_uartA53M0_Rx, &attr_Rx, (void *)&uartA53M0_Rx_thread, &fd_uartA53M0);
-	
+	pthread_create(&thread_uartA53M0_Rx, &attr_Rx, (void *)&uartA53M0_Rx_thread, &fd_uartA53M0);
+
 	pthread_attr_getschedpolicy(&attr_Rx, &policy_Rx);
-	switch(policy_Rx)
+	switch (policy_Rx)
 	{
-		case SCHED_FIFO:
-			printf(" policy Rx SCHED_FIFO\n");
-			break;
-		case SCHED_RR:
-			printf(" policy Rx SCHED_RR\n");
-			break;
-		case SCHED_OTHER:
-			printf(" policy Rx SCHED_OTHER\n");
-			break;
-		default:
-			printf(" policy Rx XXX\n");
-			break;
+	case SCHED_FIFO:
+		printf(" policy Rx SCHED_FIFO\n");
+		break;
+	case SCHED_RR:
+		printf(" policy Rx SCHED_RR\n");
+		break;
+	case SCHED_OTHER:
+		printf(" policy Rx SCHED_OTHER\n");
+		break;
+	default:
+		printf(" policy Rx XXX\n");
+		break;
 	}
-    
+
 	pthread_attr_init(&attr_Tx);
 
 	pthread_create(&thread_uartA53M0_Tx, &attr_Tx, (void *)&uartA53M0_Tx_thread, &fd_uartA53M0);
-	
+
 	pthread_attr_getschedpolicy(&attr_Tx, &policy_Tx);
-	
-	switch(policy_Rx)
+
+	switch (policy_Rx)
 	{
-		case SCHED_FIFO:
-			printf(" policy Tx SCHED_FIFO\n");
-		    break;
-		case SCHED_RR:
-			printf(" policy Tx SCHED_RR\n");
-			break;
-		case SCHED_OTHER:
-			printf(" policy Tx SCHED_OTHER\n");
-			break;
+	case SCHED_FIFO:
+		printf(" policy Tx SCHED_FIFO\n");
+		break;
+	case SCHED_RR:
+		printf(" policy Tx SCHED_RR\n");
+		break;
+	case SCHED_OTHER:
+		printf(" policy Tx SCHED_OTHER\n");
+		break;
 
-		default:
-			printf(" policy Tx XXX\n");
-			break;
+	default:
+		printf(" policy Tx XXX\n");
+		break;
 	}
-    
-    uartA53M0_SetM0_currentRTC();
 
+	uartA53M0_SetM0_currentRTC();
 
-   
-    printf("FOR Test!!!\n");
-	sleep(2); //wait for lader load
+	printf("FOR Test!!!\n");
+	sleep(2); //wait for ladar load
 
-	Status = Radar_TakePicture();
+	while (Status == RADAR_ERROR_NONE) //main loop
+	{
+		Status = Radar_GetObjectSpeedData(pPredictionDataA, M0_radarA.data);
+		Status = Radar_GetObjectStatus(pPredictionDataA, M0_radarA.data);
+		Status = Radar_PrintData(pPredictionDataA, M0_radarA.data);
+		if (PredictionDataA.Status == RADAR_PREDICTIONSTATUS_COMING && target == 0)
+		{
+			//pthread_create(&thread_uartA53M0_Tx, &attr_Tx, (Radar_Error *)&Radar_TakePicture, NULL);
+			Status = Radar_TakePicture();
+			target++;
 
-	// while(Status==RADAR_ERROR_NONE) //main loop
- 	// {
-        
-    //     sleep(1);
-	// }
+		}
+		else if (PredictionDataA.Status == RADAR_PREDICTIONSTATUS_EMPTY)
+			target = 0;
 
- 	printf("Error code: %d\n\r", Status );
+		sleep(1);
+	}
+
+	printf("Error code: %d\n\r", Status);
 	return 0;
 }
-
-
-
-
-
