@@ -102,10 +102,8 @@ Radar_Error Radar_GetObjectSpeedData(Radar_PredictionData_t *pPredictionData, M0
 /**
  * @brief Run the take photo bash that named cap.sh in /home/root/
  * 
- * @return  RADAR_ERROR_NONE                Success
- * @return  RADAR_ERROR_FILE_NOT_EXIST      File is not exist
  */
-Radar_Error Radar_TakePicture(void);
+void *Radar_TakePicture(void *parm);
 
 /**
  * @brief Print all data of the prediction status and DeltaV and DeltaX

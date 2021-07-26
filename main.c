@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
 
 	printf("FOR Test!!!\n");
 	sleep(2); //wait for ladar load
-
+	void *ret; // 子執行緒傳回值
 	while (Status == RADAR_ERROR_NONE) //main loop
 	{
 		Status = Radar_GetObjectSpeedData(pPredictionDataA, M0_radarA.data);
@@ -146,10 +146,9 @@ int main(int argc, char *argv[])
 		Status = Radar_PrintData(pPredictionDataA, M0_radarA.data);
 		if (PredictionDataA.Status == RADAR_PREDICTIONSTATUS_COMING && target == 0)
 		{
-			//pthread_create(&thread_uartA53M0_Tx, &attr_Tx, (Radar_Error *)&Radar_TakePicture, NULL);
-			Status = Radar_TakePicture();
+			pthread_create(&thread_uartA53M0_Tx, NULL, Radar_TakePicture, NULL);
+			//Status = Radar_TakePicture();
 			target++;
-
 		}
 		else if (PredictionDataA.Status == RADAR_PREDICTIONSTATUS_EMPTY)
 			target = 0;

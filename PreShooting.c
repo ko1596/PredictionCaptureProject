@@ -56,7 +56,7 @@ Radar_Error Radar_GetObjectSpeedData(Radar_PredictionData_t *pPredictionData, M0
 	return Status;
 }
 
-Radar_Error Radar_TakePicture(void)
+void *Radar_TakePicture(void *parm)
 {
 	Radar_Error Status = RADAR_ERROR_NONE;
 	const char *path = "./capture.sh";
@@ -71,8 +71,8 @@ Radar_Error Radar_TakePicture(void)
 		system(sysCmdBuf);
 		usleep(20000);
 	}
-
-	return Status;
+	pthread_exit(0);
+	//return Status;
 }
 
 Radar_Error Radar_PrintData(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data){
