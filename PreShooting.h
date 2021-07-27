@@ -23,6 +23,8 @@
 #define   INT32      int32_t
 
 #define PRINTLF(LF) printf("--------------------------%s--------------------------\n\r",#LF)
+#define RADAR_PRINT_SPEED					1
+#define RADAR_PRINT_XYZ	 	  			1
 
 /** @defgroup Radar_define_Error_group Error and Warning code returned by API
  *  The following DEFINE are used to identify the PAL ERROR
@@ -85,6 +87,7 @@ typedef struct Radar_PredictionData_t
  * @brief Return the radar status
  *
  * @param   pPredictionData               all of the prediction data 
+ * @param data                            for radar distance
  * @return  RADAR_ERROR_NONE              Success
  * @return  "Other error code"            See ::Radar_Error
  */
