@@ -15,6 +15,9 @@ Radar_Error Radar_GetObjectStatus(Radar_PredictionData_t *pPredictionData, M0_RA
 {
 	Radar_Error Status = RADAR_ERROR_NONE;
 
+	if(data.obj_type == 6)
+		Status = RADAR_ERROR_WORNG_DISTANCE;
+
 	if (Status == RADAR_ERROR_NONE)
 	{
 
@@ -40,8 +43,6 @@ Radar_Error Radar_GetObjectStatus(Radar_PredictionData_t *pPredictionData, M0_RA
 Radar_Error Radar_GetObjectSpeedData(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data)
 {
 	Radar_Error Status = RADAR_ERROR_NONE;
-	if (data.obj_distance_R == 0)
-		Status = RADAR_ERROR_INVALID_STATU;
 
 	if (Status == RADAR_ERROR_NONE)
 	{
