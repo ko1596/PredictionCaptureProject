@@ -24,6 +24,7 @@ Radar_Error Radar_GetObjectStatus(Radar_PredictionData_t *pPredictionData, M0_RA
 			pPredictionData->Status = RADAR_PREDICTIONSTATUS_EMPTY;
 		// else if(data.obj_distance_R > 0)
 		// 	pPredictionData->Status = RADAR_PREDICTIONSTATUS_COMING;
+
 		else if (pPredictionData->SpeedData.DeltaX < -2)
 			pPredictionData->Status = RADAR_PREDICTIONSTATUS_COMING;
 		else if (pPredictionData->SpeedData.DeltaX > 2)
@@ -34,6 +35,7 @@ Radar_Error Radar_GetObjectStatus(Radar_PredictionData_t *pPredictionData, M0_RA
 			pPredictionData->Status = RADAR_PREDICTIONSTATUS_PARKING;
 		else
 			pPredictionData->Status = RADAR_PREDICTIONSTATUS_INVALID;
+
 	}
 
 	return Status;
