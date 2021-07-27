@@ -27,8 +27,8 @@
 #define 	TST_M0_ADC_DATA_PRINT					1
 #define 	TST_M0_ADC_DATA_PRINT2				1
 
-#define 	TST_M0_RADAR_A_DATA_PRINT			1
-#define 	TST_M0_RADAR_B_DATA_PRINT			1
+#define 	TST_M0_RADAR_A_DATA_PRINT			0
+#define 	TST_M0_RADAR_B_DATA_PRINT			0
 
 #define 	TST_M0_RADAR_INIT_01					1
 #define 	TST_M0_RADAR_INIT_02					1

@@ -157,6 +157,19 @@ int main(int argc, char *argv[])
 		// }
 		// else if (PredictionDataA.Status == RADAR_PREDICTIONSTATUS_EMPTY)
 		// 	target = 0;
+		printf("RadarA X[%02d] Y[%02d] Z[%02d] D[%02d] P[%04d]\n\r",
+				M0_radarA.data.obj_position_X,
+				M0_radarA.data.obj_position_Y,
+				M0_radarA.data.obj_position_Z,
+				M0_radarA.data.obj_distance_R,
+				M0_radarA.data.power);
+
+		printf("RadarB X[%02d] Y[%02d] Z[%02d] D[%02d] P[%04d]\n\r\n\r",
+				M0_radarB.data.obj_position_X,
+				M0_radarB.data.obj_position_Y,
+				M0_radarB.data.obj_position_Z,
+				M0_radarB.data.obj_distance_R,
+				M0_radarB.data.power);
 
 		sleep(1);
 	}
