@@ -15,9 +15,8 @@ Radar_Error Radar_GetObjectStatus(Radar_PredictionData_t *pPredictionData, M0_RA
 {
 	Radar_Error Status = RADAR_ERROR_NONE;
 
-	if (data.obj_type == 6)
-		Status = RADAR_ERROR_WORNG_DISTANCE;
-
+	// if (data.obj_type == 6)
+	// 	Status = RADAR_ERROR_WORNG_DISTANCE;
 	if (Status == RADAR_ERROR_NONE)
 	{
 
@@ -29,10 +28,10 @@ Radar_Error Radar_GetObjectStatus(Radar_PredictionData_t *pPredictionData, M0_RA
 			pPredictionData->Status = RADAR_PREDICTIONSTATUS_COMING;
 		else if (pPredictionData->SpeedData.DeltaX > 2)
 			pPredictionData->Status = RADAR_PREDICTIONSTATUS_LEAVING;
-		else if (pPredictionData->SpeedData.DeltaX <= 2 && pPredictionData->SpeedData.DeltaX >= -2)
-			pPredictionData->Status = RADAR_PREDICTIONSTATUS_PARKING;
 		else if (data.obj_distance_R > 0 && pPredictionData->SpeedData.DeltaX == 0)
 			pPredictionData->Status = RADAR_PREDICTIONSTATUS_PARKED;
+		else if (pPredictionData->SpeedData.DeltaX <= 2 && pPredictionData->SpeedData.DeltaX >= -2)
+			pPredictionData->Status = RADAR_PREDICTIONSTATUS_PARKING;
 		else
 			pPredictionData->Status = RADAR_PREDICTIONSTATUS_INVALID;
 	}
@@ -104,7 +103,7 @@ Radar_Error Radar_PrintData(Radar_PredictionData_t *pPredictionData, M0_RADAR_DA
 		printf("X[%2d] Y[%2d] Z[%2d]\n\r",
 			data.obj_position_X,
 			data.obj_position_Y,
-			data.obj_position_Z)
+			data.obj_position_Z);
 	#endif
 
 	printf("--------------------------------------------------------\n\r");
