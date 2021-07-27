@@ -20,16 +20,16 @@ Radar_Error Radar_GetObjectStatus(Radar_PredictionData_t *pPredictionData, M0_RA
 
 		if(data.obj_distance_R == 0)
 			pPredictionData->Status = RADAR_PREDICTIONSTATUS_EMPTY;
-		else if(data.obj_distance_R > 0)
-			pPredictionData->Status = RADAR_PREDICTIONSTATUS_COMING;
-		// else if(pPredictionData->SpeedData.DeltaV < -5)
+		// else if(data.obj_distance_R > 0)
 		// 	pPredictionData->Status = RADAR_PREDICTIONSTATUS_COMING;
-		// else if(pPredictionData->SpeedData.DeltaV > 5)
-		// 	pPredictionData->Status = RADAR_PREDICTIONSTATUS_LEAVING;
-		// else if(pPredictionData->SpeedData.DeltaV <= 5 && pPredictionData->SpeedData.DeltaV >= -5)
-		// 	pPredictionData->Status = RADAR_PREDICTIONSTATUS_PARKING;
-		// else if(M0_radarA.data.obj_type == 1)
-		// 	pPredictionData->Status = RADAR_PREDICTIONSTATUS_PARKED;
+		else if(pPredictionData->SpeedData.DeltaV < -5)
+			pPredictionData->Status = RADAR_PREDICTIONSTATUS_COMING;
+		else if(pPredictionData->SpeedData.DeltaV > 5)
+			pPredictionData->Status = RADAR_PREDICTIONSTATUS_LEAVING;
+		else if(pPredictionData->SpeedData.DeltaV <= 5 && pPredictionData->SpeedData.DeltaV >= -5)
+			pPredictionData->Status = RADAR_PREDICTIONSTATUS_PARKING;
+		else if(M0_radarA.data.obj_type == 1)
+			pPredictionData->Status = RADAR_PREDICTIONSTATUS_PARKED;
 		else
 			pPredictionData->Status = RADAR_PREDICTIONSTATUS_INVALID;
 	}
