@@ -30,8 +30,8 @@ char str[1];
 
 void PrintData(void);
 void *KBhit(void *parm);
-void *WriteCSVA(void *parm);
-void *WriteCSVB(void *parm);
+void *WriteCSV(void *parm);
+
 
 int main(int argc, char *argv[])
 {
@@ -171,10 +171,6 @@ int main(int argc, char *argv[])
 
 		pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&KBhit, NULL);
 
-		
-
-
-
 		sleep(1);
 	}
 
@@ -203,92 +199,60 @@ void *KBhit(void *parm)
 {
 	char key;
 
-	while (true){
+	while (true)
+	{
 		fgets(str, 10, stdin);
 		if (str[0] == 'l')
-			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&WriteCSVA, NULL);
+			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&WriteCSV, (void *) 0);
 		else if (str[0] == 'r')
-			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&WriteCSVB, NULL);
+			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&WriteCSV, (void *) 1);
 	}
-		
 }
 
-void *WriteCSVA(void *parm)
+void *WriteCSV(void *parm)
 {
+	int LF =(int *) parm;
+
 	char filename[128];
 	time_t now = time(NULL);
 	struct tm *newtime = localtime(&now);
 	FILE *fp;
-	int i = 0;
 
 	strftime(filename, 128, "%Y%m%d%H%M%S", newtime);
 	printf("\n Creating %s.csv file\n\r", filename);
 	strcat(filename, ".csv");
 
 	fp = fopen(filename, "w+");
-
+	printf("%d\n\r", LF);
 	fprintf(fp, "RadarLR, X, Y, Z, Distance, Power");
 
-	
-
-	while (true)
+	while (str[0] != 's')
 	{
-		i++;
-		fprintf(fp, "\n%d,%d,%d,%d,%d,%d",
+		switch (LF)
+		{
+		case 0:
+			fprintf(fp, "\n%d,%d,%d,%d,%d,%d",
 				M0_radarA.data.L_R,
 				M0_radarA.data.obj_position_X,
 				M0_radarA.data.obj_position_Y,
 				M0_radarA.data.obj_position_Z,
 				M0_radarA.data.obj_distance_R,
 				M0_radarA.data.power);
-
-		if (str[0] == 's')
 			break;
-		else
-
-			printf("Data[%d] recorded!\n\r", i);
-		sleep(1);
-	};
-
-	fclose(fp);
-	printf("\n %sfile created\n\r", filename);
-	pthread_exit(NULL);
-}
-
-void *WriteCSVB(void *parm)
-{
-	char filename[128];
-	time_t now = time(NULL);
-	struct tm *newtime = localtime(&now);
-	FILE *fp;
-	int i = 0;
-
-	strftime(filename, 128, "%Y%m%d%H%M%S", newtime);
-	printf("\n Creating %s.csv file\n\r", filename);
-	strcat(filename, ".csv");
-
-	fp = fopen(filename, "w+");
-
-	fprintf(fp, "RadarLR, X, Y, Z, Distance, Power");
-
-	
-
-	while (true)
-	{
-		i++;
-		fprintf(fp, "\n%d,%d,%d,%d,%d,%d",
+		case 1:
+			fprintf(fp, "\n%d,%d,%d,%d,%d,%d",
 				M0_radarB.data.L_R,
 				M0_radarB.data.obj_position_X,
 				M0_radarB.data.obj_position_Y,
 				M0_radarB.data.obj_position_Z,
 				M0_radarB.data.obj_distance_R,
 				M0_radarB.data.power);
-
-		if (str[0] == 's')
 			break;
-		else
-
-			printf("Data[%d] recorded!\n\r", i);
+		default:
+			break;
+		}
+		
+		printf("recording\n\r");
 		sleep(1);
 	};
 
