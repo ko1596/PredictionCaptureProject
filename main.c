@@ -25,6 +25,9 @@
 #include "Ta5320G_TIMER/m0All_Header.h"
 #include "PreShooting.h"
 
+void PrintData(void);
+void *KBhit(void *parm);
+
 int main(int argc, char *argv[])
 {
 	/* USER CODE BEGIN PV */
@@ -138,6 +141,7 @@ int main(int argc, char *argv[])
 
 	printf("FOR Test!!!\n");
 	sleep(2); //wait for ladar load
+
 	void *ret; // 子執行緒傳回值
 	while (Status == RADAR_ERROR_NONE) //main loop
 	{
@@ -157,23 +161,43 @@ int main(int argc, char *argv[])
 		// }
 		// else if (PredictionDataA.Status == RADAR_PREDICTIONSTATUS_EMPTY)
 		// 	target = 0;
-		printf("RadarA X[%02d] Y[%02d] Z[%02d] D[%02d] P[%04d]\n\r",
-				M0_radarA.data.obj_position_X,
-				M0_radarA.data.obj_position_Y,
-				M0_radarA.data.obj_position_Z,
-				M0_radarA.data.obj_distance_R,
-				M0_radarA.data.power);
-
-		printf("RadarB X[%02d] Y[%02d] Z[%02d] D[%02d] P[%04d]\n\r\n\r",
-				M0_radarB.data.obj_position_X,
-				M0_radarB.data.obj_position_Y,
-				M0_radarB.data.obj_position_Z,
-				M0_radarB.data.obj_distance_R,
-				M0_radarB.data.power);
+		
+		
+		PrintData();
+		
+		pthread_create(&thread_uartA53M0_Tx, NULL, (void*)&KBhit, NULL);
 
 		sleep(1);
 	}
 
 	//printf("Error code: %d\n\r", Status);
 	return 0;
+}
+
+void PrintData(void){
+	printf("RadarA X[%02d] Y[%02d] Z[%02d] D[%02d] P[%04d]\n\r",
+				M0_radarA.data.obj_position_X,
+				M0_radarA.data.obj_position_Y,
+				M0_radarA.data.obj_position_Z,
+				M0_radarA.data.obj_distance_R,
+				M0_radarA.data.power);
+
+	printf("RadarB X[%02d] Y[%02d] Z[%02d] D[%02d] P[%04d]\n\r\n\r",
+				M0_radarB.data.obj_position_X,
+				M0_radarB.data.obj_position_Y,
+				M0_radarB.data.obj_position_Z,
+				M0_radarB.data.obj_distance_R,
+				M0_radarB.data.power);
+}
+
+void *KBhit(void *parm){
+	char key;
+	while (true)
+	{
+		key = getchar();
+		if(key != '\n')
+			printf( " key=[%c] \n", key );
+	}
+	
+	
 }
