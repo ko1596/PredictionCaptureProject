@@ -27,6 +27,7 @@
 
 void PrintData(void);
 void *KBhit(void *parm);
+void *WriteCSV(void *parm);
 
 int main(int argc, char *argv[])
 {
@@ -192,12 +193,53 @@ void PrintData(void){
 
 void *KBhit(void *parm){
 	char key;
+	char str[1];
 	while (true)
 	{
-		key = getchar();
-		if(key != '\n')
-			printf( " key=[%c] \n", key );
+		
+		fgets(str,10,stdin);
+		if(str[0]=='r')
+			pthread_create(&thread_uartA53M0_Tx, NULL, (void*)&WriteCSV, NULL);
+		
 	}
 	
 	
+}
+
+void *WriteCSV(void *parm){
+	char filename[128];
+	char str[1];
+	time_t now=time(NULL);
+	struct tm *newtime=localtime(&now);
+	FILE *fp;
+	strftime(filename,128,"%Y-%m-%d",newtime);
+	int i=0;
+	printf("\n Creating %s.csv file\n\r",filename);
+	strcat(filename,".csv");
+	fp=fopen(filename,"w+");
+
+	fprintf(fp,"RadarLR, X, Y, Z, Distance, Power");
+
+	while (true)
+	{
+		i++;
+		fprintf(fp,"\n%d",i+1);
+		fprintf(fp,",%d,%d,%d,%d,%d,%d",
+			M0_radarA.data.L_R,
+			M0_radarA.data.obj_position_X,
+			M0_radarA.data.obj_position_Y,
+			M0_radarA.data.obj_position_Z,
+			M0_radarA.data.obj_distance_R,
+			M0_radarA.data.power);
+		printf("data\n\r");
+		
+		if(i==10)
+			break;
+		else
+			printf("i[%d]\n\r",i);
+		sleep(1);
+	};
+	
+	fclose(fp);
+	printf("\n %sfile created\n\r",filename);
 }
