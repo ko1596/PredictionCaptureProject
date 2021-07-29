@@ -82,7 +82,6 @@ void *Radar_TakePicture(void *parm)
 		usleep(20000);
 	}
 	pthread_exit(0);
-	//return Status;
 }
 
 Radar_Error Radar_PrintData(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data)

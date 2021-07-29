@@ -28,6 +28,7 @@
 /* Global variables ---------------------------------------------------------*/
 char str[1];
 
+/* Private function ---------------------------------------------------------*/
 void PrintData(void);
 void *KBhit(void *parm);
 void *WriteCSV(void *parm);
@@ -146,35 +147,15 @@ int main(int argc, char *argv[])
 	uartA53M0_SetM0_currentRTC();
 
 	printf("FOR Test!!!\n");
-	sleep(2); //wait for ladar load
 
 	while (Status == RADAR_ERROR_NONE) //main loop
 	{
-		// Status = Radar_GetObjectSpeedData(pPredictionDataA, M0_radarA.data);
-		// Status = Radar_GetObjectStatus(pPredictionDataA, M0_radarA.data);
-		// Status = Radar_PrintData(pPredictionDataA, M0_radarA.data);
-
-		// Status = Radar_GetObjectSpeedData(pPredictionDataB, M0_radarB.data);
-		// Status = Radar_GetObjectStatus(pPredictionDataB, M0_radarB.data);
-		// Status = Radar_PrintData(pPredictionDataB, M0_radarB.data);
-
-		// if (PredictionDataA.Status == RADAR_PREDICTIONSTATUS_COMING && target == 0)
-		// {
-		// 	pthread_create(&thread_uartA53M0_Tx, NULL, Radar_TakePicture, NULL);
-		// 	//Status = Radar_TakePicture();
-		// 	target++;
-		// }
-		// else if (PredictionDataA.Status == RADAR_PREDICTIONSTATUS_EMPTY)
-		// 	target = 0;
-
 		PrintData();
-
 		pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&KBhit, NULL);
 
 		sleep(1);
 	}
 
-	//printf("Error code: %d\n\r", Status);
 	return 0;
 }
 
@@ -197,8 +178,6 @@ void PrintData(void)
 
 void *KBhit(void *parm)
 {
-	char key;
-
 	while (true)
 	{
 		fgets(str, 10, stdin);
