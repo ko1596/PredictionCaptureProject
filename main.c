@@ -152,7 +152,7 @@ int main(int argc, char *argv[])
 	{
 		PrintData();
 		pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&KBhit, NULL);
-
+		
 		sleep(1);
 	}
 
@@ -182,9 +182,11 @@ void *KBhit(void *parm)
 	{
 		fgets(str, 10, stdin);
 		if (str[0] == 'l')
-			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&WriteCSV, (void *) 0);
-		else if (str[0] == 'r')
 			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&WriteCSV, (void *) 1);
+		else if (str[0] == 'r')
+			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&WriteCSV, (void *) 2);
+		else if (str[0] == 'c')
+			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, "5");
 	}
 }
 
@@ -227,6 +229,6 @@ void GetCSVName(char *name)
 	time_t now = time(NULL);
 	struct tm *newtime = localtime(&now);
 	strftime(name, 128, "%Y%m%d%H%M%S", newtime);
-	printf("\n Creating %s.csv file\n\r", name);
+	printf("\nCreating %s.csv file\n\r", name);
 	strcat(name, ".csv");
 }

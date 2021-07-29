@@ -68,11 +68,15 @@ Radar_Error Radar_GetObjectSpeedData(Radar_PredictionData_t *pPredictionData, M0
 void *Radar_TakePicture(void *parm)
 {
 	Radar_Error Status = RADAR_ERROR_NONE;
-	const char *path = "./capture.sh";
+	char path[30] = "./capture.sh";
 	char sysCmdBuf[256];
+	char *amount = (char*) parm;
+	char test[1] = " ";
+	strcat(path, test);
+	strcat(path, amount);
 
-	if (access(path, F_OK) == -1)
-		Status = RADAR_ERROR_FILE_NOT_EXIST;
+	printf("%s\n\r", path);
+
 
 	if (Status == RADAR_ERROR_NONE)
 	{
