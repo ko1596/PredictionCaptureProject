@@ -31,6 +31,7 @@ char str[1];
 void PrintData(void);
 void *KBhit(void *parm);
 void *WriteCSV(void *parm);
+void GetCSVName(char *name);
 
 
 int main(int argc, char *argv[])
@@ -147,7 +148,6 @@ int main(int argc, char *argv[])
 	printf("FOR Test!!!\n");
 	sleep(2); //wait for ladar load
 
-	void *ret;						   // 子執行緒傳回值
 	while (Status == RADAR_ERROR_NONE) //main loop
 	{
 		// Status = Radar_GetObjectSpeedData(pPredictionDataA, M0_radarA.data);
@@ -211,47 +211,28 @@ void *KBhit(void *parm)
 
 void *WriteCSV(void *parm)
 {
-	int LF =(int *) parm;
-
+	int LF = (int *) parm;
 	char filename[128];
-	time_t now = time(NULL);
-	struct tm *newtime = localtime(&now);
 	FILE *fp;
+	M0_RADAR_DATA_FRAME data;
 
-	strftime(filename, 128, "%Y%m%d%H%M%S", newtime);
-	printf("\n Creating %s.csv file\n\r", filename);
-	strcat(filename, ".csv");
-
+	GetCSVName(filename);
 	fp = fopen(filename, "w+");
-	printf("%d\n\r", LF);
+
 	fprintf(fp, "RadarLR, X, Y, Z, Distance, Power");
 
 	while (str[0] != 's')
 	{
-		switch (LF)
-		{
-		case 0:
-			fprintf(fp, "\n%d,%d,%d,%d,%d,%d",
-				M0_radarA.data.L_R,
-				M0_radarA.data.obj_position_X,
-				M0_radarA.data.obj_position_Y,
-				M0_radarA.data.obj_position_Z,
-				M0_radarA.data.obj_distance_R,
-				M0_radarA.data.power);
-			break;
-		case 1:
-			fprintf(fp, "\n%d,%d,%d,%d,%d,%d",
-				M0_radarB.data.L_R,
-				M0_radarB.data.obj_position_X,
-				M0_radarB.data.obj_position_Y,
-				M0_radarB.data.obj_position_Z,
-				M0_radarB.data.obj_distance_R,
-				M0_radarB.data.power);
-			break;
-		default:
-			break;
-		}
-		
+		data = LF ? M0_radarA.data : M0_radarB.data;
+	
+		fprintf(fp, "\n%d,%d,%d,%d,%d,%d",
+			data.L_R,
+			data.obj_position_X,
+			data.obj_position_Y,
+			data.obj_position_Z,
+			data.obj_distance_R,
+			data.power);
+				
 		printf("recording\n\r");
 		sleep(1);
 	};
@@ -259,4 +240,14 @@ void *WriteCSV(void *parm)
 	fclose(fp);
 	printf("\n %sfile created\n\r", filename);
 	pthread_exit(NULL);
+	return 0;
+}
+
+void GetCSVName(char *name)
+{
+	time_t now = time(NULL);
+	struct tm *newtime = localtime(&now);
+	strftime(name, 128, "%Y%m%d%H%M%S", newtime);
+	printf("\n Creating %s.csv file\n\r", name);
+	strcat(name, ".csv");
 }
