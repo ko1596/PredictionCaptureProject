@@ -90,13 +90,12 @@ Radar_Error Radar_PrintData(Radar_PredictionData_t *pPredictionData, M0_RADAR_DA
 	data.L_R ? PRINTLF(RIGHT) : PRINTLF(LEFT); //PRINTLF(LF) printf("--------------------------#LF--------------------------\n\r")
 
 	#if RADAR_PRINT_SPEED
-		printf("initX: %3d\tDeltaX: %2d\n\rinitV: %3d\tDeltaV: %2d\n\rStatus: %1d\n\rDistance: %3d\n\r",
+		printf("initX: %3d\tDeltaX: %2d\n\rinitV: %3d\tDeltaV: %2d\n\rStatus: %1d\n\r",
 			pPredictionData->SpeedData.InitialDistance,
 			pPredictionData->SpeedData.DeltaX,
 			pPredictionData->SpeedData.InitialSpeed,
 			pPredictionData->SpeedData.DeltaV,
-			pPredictionData->Status,
-			data.obj_distance_R);
+			pPredictionData->Status);
 	#endif
 
 	#if RADAR_PRINT_XYZ
