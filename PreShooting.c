@@ -15,23 +15,18 @@ Radar_Error Radar_GetObjectStatus(Radar_PredictionData_t *pPredictionData, M0_RA
 {
 	Radar_Error Status = RADAR_ERROR_NONE;
 
-	// if (data.obj_type == 6)
-	// 	Status = RADAR_ERROR_WORNG_DISTANCE;
 	if (Status == RADAR_ERROR_NONE)
 	{
 
 		if (data.obj_distance_R == 0)
 			pPredictionData->Status = RADAR_PREDICTIONSTATUS_EMPTY;
-		// else if(data.obj_distance_R > 0)
-		// 	pPredictionData->Status = RADAR_PREDICTIONSTATUS_COMING;
-
-		else if (pPredictionData->SpeedData.DeltaX < -2)
+		else if (pPredictionData->SpeedData.DeltaV < -2)
 			pPredictionData->Status = RADAR_PREDICTIONSTATUS_COMING;
-		else if (pPredictionData->SpeedData.DeltaX > 2)
+		else if (pPredictionData->SpeedData.DeltaV > 2)
 			pPredictionData->Status = RADAR_PREDICTIONSTATUS_LEAVING;
-		else if (data.obj_distance_R > 0 && pPredictionData->SpeedData.DeltaX == 0)
+		else if (data.obj_distance_R > 0 && pPredictionData->SpeedData.DeltaV == 0)
 			pPredictionData->Status = RADAR_PREDICTIONSTATUS_PARKED;
-		else if (pPredictionData->SpeedData.DeltaX <= 2 && pPredictionData->SpeedData.DeltaX >= -2)
+		else if (pPredictionData->SpeedData.DeltaV <= 2 && pPredictionData->SpeedData.DeltaV >= -2)
 			pPredictionData->Status = RADAR_PREDICTIONSTATUS_PARKING;
 		else
 			pPredictionData->Status = RADAR_PREDICTIONSTATUS_INVALID;
@@ -92,7 +87,7 @@ Radar_Error Radar_PrintData(Radar_PredictionData_t *pPredictionData, M0_RADAR_DA
 {
 	Radar_Error Status = RADAR_ERROR_NONE;
 
-	data.L_R ? PRINTLF(LEFT) : PRINTLF(RIGHT); //PRINTLF(LF) printf("--------------------------#LF--------------------------\n\r")
+	data.L_R ? PRINTLF(RIGHT) : PRINTLF(LEFT); //PRINTLF(LF) printf("--------------------------#LF--------------------------\n\r")
 
 	#if RADAR_PRINT_SPEED
 		printf("initX: %3d\tDeltaX: %2d\n\rinitV: %3d\tDeltaV: %2d\n\rStatus: %1d\n\rDistance: %3d\n\r",
@@ -105,10 +100,12 @@ Radar_Error Radar_PrintData(Radar_PredictionData_t *pPredictionData, M0_RADAR_DA
 	#endif
 
 	#if RADAR_PRINT_XYZ
-		printf("X[%2d] Y[%2d] Z[%2d]\n\r",
-			data.obj_position_X,
-			data.obj_position_Y,
-			data.obj_position_Z);
+		printf("RadarA X[%02d] Y[%02d] Z[%02d] D[%02d] P[%04d]\n\r",
+		   data.obj_position_X,
+		   data.obj_position_Y,
+		   data.obj_position_Z,
+		   data.obj_distance_R,
+		   data.power);
 	#endif
 
 	printf("--------------------------------------------------------\n\r");

@@ -29,13 +29,6 @@
 char str[1];		//for the KBhit to save detect keyboard event character
 
 /* Private function ---------------------------------------------------------*/
-
-/**
- * @brief print all the radar data, include X Y Z Distance and Power
- * 
- */
-void PrintData(void);
-
 /**
  * @brief scan the keyboard event to create the thread
  * 
@@ -58,6 +51,15 @@ void *WriteCSV(void *parm);
  * @param name the filename ptr
  */
 void GetCSVName(char *name);
+
+/**
+ * @brief prediction shooting
+ * 
+ * @param pPredictionData                 all of the prediction data 
+ * @param data                            for radar distance
+ * @return bool -						  prediction shooting resulte
+ */
+bool IsPreShoot(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data);
 
 
 int main(int argc, char *argv[])
@@ -184,23 +186,6 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-void PrintData(void)
-{
-	printf("RadarA X[%02d] Y[%02d] Z[%02d] D[%02d] P[%04d]\n\r",
-		   M0_radarA.data.obj_position_X,
-		   M0_radarA.data.obj_position_Y,
-		   M0_radarA.data.obj_position_Z,
-		   M0_radarA.data.obj_distance_R,
-		   M0_radarA.data.power);
-
-	printf("RadarB X[%02d] Y[%02d] Z[%02d] D[%02d] P[%04d]\n\r\n\r",
-		   M0_radarB.data.obj_position_X,
-		   M0_radarB.data.obj_position_Y,
-		   M0_radarB.data.obj_position_Z,
-		   M0_radarB.data.obj_distance_R,
-		   M0_radarB.data.power);
-}
-
 void *KBhit(void *parm)
 {
 	while (true)
@@ -256,4 +241,8 @@ void GetCSVName(char *name)
 	strftime(name, 128, "%Y%m%d%H%M%S", newtime);
 	printf("\nCreating %s.csv file\n\r", name);
 	strcat(name, ".csv");
+}
+
+bool IsPreShoot(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data){
+	return pPredictionData->Status == RADAR_PREDICTIONSTATUS_PARKING && data.obj_distance_R < 20;
 }
