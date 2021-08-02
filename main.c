@@ -184,7 +184,7 @@ void *KBhit(void *parm)
 		if (str[0] == 'l')
 			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&WriteCSV, (void *) 1);
 		else if (str[0] == 'r')
-			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&WriteCSV, (void *) 2);
+			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&WriteCSV, (void *) 0);
 		else if (str[0] == 'c')
 			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, "5");
 	}
