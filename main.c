@@ -26,7 +26,7 @@
 #include "PreShooting.h"
 
 /* Global variables ---------------------------------------------------------*/
-char str[1];		//for the KBhit to save detect keyboard event character
+char str[1]; //for the KBhit to save detect keyboard event character
 
 /* Private function ---------------------------------------------------------*/
 /**
@@ -60,7 +60,6 @@ void GetCSVName(char *name);
  * @return bool -						  prediction shooting resulte
  */
 bool IsPreShoot(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data);
-
 
 int main(int argc, char *argv[])
 {
@@ -180,7 +179,7 @@ int main(int argc, char *argv[])
 	{
 		system("clear");
 		pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&KBhit, NULL);
-		
+
 		Status = Radar_GetObjectSpeedData(pPredictionDataA, M0_radarA.data);
 		Status = Radar_GetObjectStatus(pPredictionDataA, M0_radarA.data);
 		Status = Radar_PrintData(pPredictionDataA, M0_radarA.data);
@@ -188,21 +187,22 @@ int main(int argc, char *argv[])
 		Status = Radar_GetObjectSpeedData(pPredictionDataB, M0_radarB.data);
 		Status = Radar_GetObjectStatus(pPredictionDataB, M0_radarB.data);
 		Status = Radar_PrintData(pPredictionDataB, M0_radarB.data);
-		
-		if (pPredictionDataA->Status == RADAR_PREDICTIONSTATUS_EMPTY) targetL=0;
-		if (pPredictionDataB->Status == RADAR_PREDICTIONSTATUS_EMPTY) targetR=0;
-		
-		if(IsPreShoot(pPredictionDataA, M0_radarA.data) && targetL==0)
+
+		if (pPredictionDataA->Status == RADAR_PREDICTIONSTATUS_EMPTY)
+			targetL = 0;
+		if (pPredictionDataB->Status == RADAR_PREDICTIONSTATUS_EMPTY)
+			targetR = 0;
+
+		if (IsPreShoot(pPredictionDataA, M0_radarA.data) && targetL == 0)
 		{
-			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, "1 1");
+			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, "5 1");
 			targetL++;
 		}
-		else if(IsPreShoot(pPredictionDataB, M0_radarB.data) && targetR==0)
+		else if (IsPreShoot(pPredictionDataB, M0_radarB.data) && targetR == 0)
 		{
-			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, "1 0");
+			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, "5 0");
 			targetR++;
 		}
-
 
 		sleep(1);
 	}
@@ -216,9 +216,9 @@ void *KBhit(void *parm)
 	{
 		fgets(str, 10, stdin);
 		if (str[0] == 'l')
-			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&WriteCSV, (void *) 1);
+			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&WriteCSV, (void *)1);
 		else if (str[0] == 'r')
-			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&WriteCSV, (void *) 0);
+			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&WriteCSV, (void *)0);
 		else if (str[0] == 'c')
 			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, "5 1");
 	}
@@ -226,7 +226,7 @@ void *KBhit(void *parm)
 
 void *WriteCSV(void *parm)
 {
-	int LF = (int *) parm;
+	int LF = (int *)parm;
 	char filename[128];
 	FILE *fp;
 	M0_RADAR_DATA_FRAME data;
@@ -239,15 +239,15 @@ void *WriteCSV(void *parm)
 	while (str[0] != 's')
 	{
 		data = LF ? M0_radarA.data : M0_radarB.data;
-	
+
 		fprintf(fp, "\n%d,%d,%d,%d,%d,%d",
-			data.L_R,
-			data.obj_position_X,
-			data.obj_position_Y,
-			data.obj_position_Z,
-			data.obj_distance_R,
-			data.power);
-				
+				data.L_R,
+				data.obj_position_X,
+				data.obj_position_Y,
+				data.obj_position_Z,
+				data.obj_distance_R,
+				data.power);
+
 		printf("recording\n\r");
 		sleep(1);
 	};
@@ -267,6 +267,10 @@ void GetCSVName(char *name)
 	strcat(name, ".csv");
 }
 
-bool IsPreShoot(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data){
-	return pPredictionData->Status == RADAR_PREDICTIONSTATUS_PARKING && data.obj_distance_R < 20;
+bool IsPreShoot(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data)
+{
+	if(data.L_R == 0)
+		return pPredictionData->Status == (RADAR_PREDICTIONSTATUS_PARKING || RADAR_PREDICTIONSTATUS_COMING) && data.obj_distance_R < 40;
+	else
+		return pPredictionData->Status == (RADAR_PREDICTIONSTATUS_PARKING || RADAR_PREDICTIONSTATUS_COMING) && data.obj_distance_R < 15;
 }
