@@ -26,12 +26,37 @@
 #include "PreShooting.h"
 
 /* Global variables ---------------------------------------------------------*/
-char str[1];
+char str[1];		//for the KBhit to save detect keyboard event character
 
 /* Private function ---------------------------------------------------------*/
+
+/**
+ * @brief print all the radar data, include X Y Z Distance and Power
+ * 
+ */
 void PrintData(void);
+
+/**
+ * @brief scan the keyboard event to create the thread
+ * 
+ * @param parm 		NONE
+ * @return void* 
+ */
 void *KBhit(void *parm);
+
+/**
+ * @brief Write radar information to CSV file 
+ * 
+ * @param parm 		detect left or right var.
+ * @return void* 
+ */
 void *WriteCSV(void *parm);
+
+/**
+ * @brief Use today's date as the file name 
+ * 
+ * @param name the filename ptr
+ */
 void GetCSVName(char *name);
 
 
