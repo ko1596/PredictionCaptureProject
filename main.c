@@ -70,7 +70,8 @@ int main(int argc, char *argv[])
 	Radar_PredictionData_t *pPredictionDataA = &PredictionDataA;
 	Radar_PredictionData_t *pPredictionDataB = &PredictionDataB;
 	Radar_Error Status;
-	int target = 0;
+	int targetL = 0;
+	int targetR = 0;
 	/* USER CODE END PV */
 
 	/* Initialize all parameters */
@@ -177,9 +178,32 @@ int main(int argc, char *argv[])
 
 	while (Status == RADAR_ERROR_NONE) //main loop
 	{
-		PrintData();
+		system("clear");
 		pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&KBhit, NULL);
 		
+		Status = Radar_GetObjectSpeedData(pPredictionDataA, M0_radarA.data);
+		Status = Radar_GetObjectStatus(pPredictionDataA, M0_radarA.data);
+		Status = Radar_PrintData(pPredictionDataA, M0_radarA.data);
+
+		Status = Radar_GetObjectSpeedData(pPredictionDataB, M0_radarB.data);
+		Status = Radar_GetObjectStatus(pPredictionDataB, M0_radarB.data);
+		Status = Radar_PrintData(pPredictionDataB, M0_radarB.data);
+		
+		if (pPredictionDataA->Status == RADAR_PREDICTIONSTATUS_EMPTY) targetL=0;
+		if (pPredictionDataB->Status == RADAR_PREDICTIONSTATUS_EMPTY) targetR=0;
+		
+		if(IsPreShoot(pPredictionDataA, M0_radarA.data) && targetL==0)
+		{
+			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, "1 1");
+			targetL++;
+		}
+		else if(IsPreShoot(pPredictionDataB, M0_radarB.data) && targetR==0)
+		{
+			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, "1 0");
+			targetR++;
+		}
+
+
 		sleep(1);
 	}
 
@@ -196,7 +220,7 @@ void *KBhit(void *parm)
 		else if (str[0] == 'r')
 			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&WriteCSV, (void *) 0);
 		else if (str[0] == 'c')
-			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, "5");
+			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, "5 1");
 	}
 }
 
