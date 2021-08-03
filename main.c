@@ -195,12 +195,13 @@ int main(int argc, char *argv[])
 
 		if (IsPreShoot(pPredictionDataA, M0_radarA.data) && targetL == 0)
 		{
-			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, "5 1");
+			sleep(2);
+			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, "3 1");
 			targetL++;
 		}
 		else if (IsPreShoot(pPredictionDataB, M0_radarB.data) && targetR == 0)
 		{
-			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, "5 0");
+			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, "3 0");
 			targetR++;
 		}
 
