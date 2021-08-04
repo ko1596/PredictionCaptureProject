@@ -71,6 +71,7 @@ int main(int argc, char *argv[])
 	Radar_Error Status;
 	int targetL = 0;
 	int targetR = 0;
+	int err;
 	/* USER CODE END PV */
 
 	/* Initialize all parameters */
@@ -177,7 +178,7 @@ int main(int argc, char *argv[])
 
 	while (Status == RADAR_ERROR_NONE) //main loop
 	{
-		system("clear");
+		//system("clear");
 		pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&KBhit, NULL);
 
 		Status = Radar_GetObjectSpeedData(pPredictionDataA, M0_radarA.data);
@@ -196,12 +197,16 @@ int main(int argc, char *argv[])
 		if (IsPreShoot(pPredictionDataA, M0_radarA.data) && targetL == 0)
 		{
 			sleep(2);
-			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, "3 1");
+			err = pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture1, "3 1");
+			if (err != 0)
+            	printf("\ncan't create thread :[%s]", strerror(err));
 			targetL++;
 		}
 		else if (IsPreShoot(pPredictionDataB, M0_radarB.data) && targetR == 0)
 		{
-			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, "3 0");
+			err = pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture2, "3 0");
+			if (err != 0)
+				printf("\ncan't create thread :[%s]", strerror(err));
 			targetR++;
 		}
 
@@ -221,7 +226,7 @@ void *KBhit(void *parm)
 		else if (str[0] == 'r')
 			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&WriteCSV, (void *)0);
 		else if (str[0] == 'c')
-			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, "5 1");
+			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture1, "3 0");
 	}
 }
 

@@ -60,8 +60,10 @@ Radar_Error Radar_GetObjectSpeedData(Radar_PredictionData_t *pPredictionData, M0
 	return Status;
 }
 
-void *Radar_TakePicture(void *parm)
+void *Radar_TakePicture1(void *parm)
 {
+	//pthread_mutex_lock(&mutex1);
+	
 	Radar_Error Status = RADAR_ERROR_NONE;
 	char path[30] = "./capture.sh";
 	char sysCmdBuf[256];
@@ -80,6 +82,34 @@ void *Radar_TakePicture(void *parm)
 		system(sysCmdBuf);
 		usleep(20000);
 	}
+
+	//pthread_mutex_unlock(&mutex1);
+	pthread_exit(0);
+}
+
+void *Radar_TakePicture2(void *parm)
+{
+	pthread_mutex_lock(&mutex2);
+	
+	Radar_Error Status = RADAR_ERROR_NONE;
+	char path[30] = "./capture.sh";
+	char sysCmdBuf[256];
+	char *amount = (char*) parm;
+	char test[1] = " ";
+	strcat(path, test);
+	strcat(path, amount);
+
+	printf("%s\n\r", path);
+
+
+	if (Status == RADAR_ERROR_NONE)
+	{
+		bzero(sysCmdBuf, 256);
+		sprintf(sysCmdBuf, path);
+		system(sysCmdBuf);
+		usleep(20000);
+	}
+	pthread_mutex_unlock(&mutex2);
 	pthread_exit(0);
 }
 
@@ -119,5 +149,18 @@ Radar_Error Radar_InitData(Radar_PredictionData_t *pPredictionData)
 	pPredictionData->SpeedData.InitialDistance = 0;
 	pPredictionData->SpeedData.InitialSpeed = 0;
 	pPredictionData->Status = RADAR_PREDICTIONSTATUS_INVALID;
+
+	if (pthread_mutex_init(&mutex1, NULL) != 0)
+    {
+        printf("\n mutex init failed\n");
+        Status = RADAR_ERROR_CANT_INIT_MUTEX;
+    }
+
+	if (pthread_mutex_init(&mutex2, NULL) != 0)
+    {
+        printf("\n mutex init failed\n");
+        Status = RADAR_ERROR_CANT_INIT_MUTEX;
+    }
+
 	return Status;
 }

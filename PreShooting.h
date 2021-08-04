@@ -16,13 +16,18 @@
 #include <stdint.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <pthread.h>
 #include "Ta5320G_TIMER/m0All_Header.h"
+
+pthread_mutex_t mutex1;
+pthread_mutex_t mutex2;
 
 #define   INT8       int8_t
 #define   INT16      int16_t
 #define   INT32      int32_t
 
 #define PRINTLF(LF) printf("--------------------------%s--------------------------\n\r",#LF)
+
 #define RADAR_PRINT_SPEED					1
 #define RADAR_PRINT_XYZ	 	  			1
 
@@ -36,6 +41,7 @@ typedef int8_t Radar_Error;
 #define RADAR_ERROR_INVALID_STATU               ((Radar_Error) - 1)       /*!< Warning invalid status*/
 #define RADAR_ERROR_FILE_NOT_EXIST              ((Radar_Error) - 2)       /*!< The file not exist when opening file*/
 #define RADAR_ERROR_WORNG_DISTANCE              ((Radar_Error) - 3)       /*!< The X and Y distance equal 0*/
+#define RADAR_ERROR_CANT_INIT_MUTEX             ((Radar_Error) - 4)       /*!< Can't initializ the mutex*/
 
 /** @} Radar_define_Error_group */
 
@@ -106,7 +112,13 @@ Radar_Error Radar_GetObjectSpeedData(Radar_PredictionData_t *pPredictionData, M0
  * @brief Run the take photo bash that named cap.sh in /home/root/
  * 
  */
-void *Radar_TakePicture(void *parm);
+void *Radar_TakePicture1(void *parm);
+
+/**
+ * @brief Run the take photo bash that named cap.sh in /home/root/
+ * 
+ */
+void *Radar_TakePicture2(void *parm);
 
 /**
  * @brief Print all data of the prediction status and DeltaV and DeltaX
