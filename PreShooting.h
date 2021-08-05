@@ -25,8 +25,8 @@
 
 #define PRINTLF(LF) printf("--------------------------%s--------------------------\n\r",#LF)
 
-#define RADAR_PRINT_SPEED					1
-#define RADAR_PRINT_XYZ	 	  			1
+#define RADAR_PRINT_SPEED					0
+#define RADAR_PRINT_XYZ	 	  			0
 
 /** @defgroup Radar_define_Error_group Error and Warning code returned by API
  *  The following DEFINE are used to identify the PAL ERROR
