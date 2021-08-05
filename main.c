@@ -197,16 +197,14 @@ int main(int argc, char *argv[])
 		if (IsPreShoot(pPredictionDataA, M0_radarA.data) && targetL == 0)
 		{
 			sleep(2);
-			err = pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture1, "3 1");
-			if (err != 0)
-            	printf("\ncan't create thread :[%s]", strerror(err));
+			err = pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, "3 1");
+			if (err != 0) printf("\ncan't create thread :[%s]", strerror(err));
 			targetL++;
 		}
 		else if (IsPreShoot(pPredictionDataB, M0_radarB.data) && targetR == 0)
 		{
-			err = pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture2, "3 0");
-			if (err != 0)
-				printf("\ncan't create thread :[%s]", strerror(err));
+			err = pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, "3 0");
+			if (err != 0) printf("\ncan't create thread :[%s]", strerror(err));
 			targetR++;
 		}
 
@@ -218,6 +216,7 @@ int main(int argc, char *argv[])
 
 void *KBhit(void *parm)
 {
+	int err;
 	while (true)
 	{
 		fgets(str, 10, stdin);
@@ -225,8 +224,11 @@ void *KBhit(void *parm)
 			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&WriteCSV, (void *)1);
 		else if (str[0] == 'r')
 			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&WriteCSV, (void *)0);
-		else if (str[0] == 'c')
-			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture1, "3 0");
+		else if (str[0] == 'c'){
+			err = pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, "3 1");
+			if (err<0) printf("error: %s", strerror(errno));
+		}
+			
 	}
 }
 
@@ -276,7 +278,7 @@ void GetCSVName(char *name)
 bool IsPreShoot(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data)
 {
 	if(data.L_R == 0)
-		return pPredictionData->Status == (RADAR_PREDICTIONSTATUS_PARKING || RADAR_PREDICTIONSTATUS_COMING) && data.obj_distance_R < 40;
+		return pPredictionData->Status == (RADAR_PREDICTIONSTATUS_PARKING || RADAR_PREDICTIONSTATUS_COMING) && data.obj_distance_R < 30;
 	else
-		return pPredictionData->Status == (RADAR_PREDICTIONSTATUS_PARKING || RADAR_PREDICTIONSTATUS_COMING) && data.obj_distance_R < 15;
+		return pPredictionData->Status == (RADAR_PREDICTIONSTATUS_PARKING || RADAR_PREDICTIONSTATUS_COMING) && data.obj_distance_R < 18;
 }

@@ -18,16 +18,21 @@ Radar_Error Radar_GetObjectStatus(Radar_PredictionData_t *pPredictionData, M0_RA
 	if (Status == RADAR_ERROR_NONE)
 	{
 
-		if (data.obj_distance_R == 0)
+		if (data.obj_distance_R == 0 && pPredictionData->SpeedData.DeltaV == 0 && pPredictionData->SpeedData.DeltaX == 0)
 			pPredictionData->Status = RADAR_PREDICTIONSTATUS_EMPTY;
-		else if (pPredictionData->SpeedData.DeltaV < -2)
+
+		else if (pPredictionData->SpeedData.DeltaV < -5)
 			pPredictionData->Status = RADAR_PREDICTIONSTATUS_COMING;
-		else if (pPredictionData->SpeedData.DeltaV > 2)
+
+		else if (pPredictionData->SpeedData.DeltaV > 5)
 			pPredictionData->Status = RADAR_PREDICTIONSTATUS_LEAVING;
-		else if (data.obj_distance_R > 0 && pPredictionData->SpeedData.DeltaV == 0)
+
+		else if (data.obj_distance_R > 0 && pPredictionData->SpeedData.DeltaV == 0 && pPredictionData->SpeedData.DeltaX == 0)
 			pPredictionData->Status = RADAR_PREDICTIONSTATUS_PARKED;
-		else if (pPredictionData->SpeedData.DeltaV <= 2 && pPredictionData->SpeedData.DeltaV >= -2)
+
+		else if (pPredictionData->SpeedData.DeltaV <= 5 && pPredictionData->SpeedData.DeltaV >= -5)
 			pPredictionData->Status = RADAR_PREDICTIONSTATUS_PARKING;
+
 		else
 			pPredictionData->Status = RADAR_PREDICTIONSTATUS_INVALID;
 
@@ -60,9 +65,9 @@ Radar_Error Radar_GetObjectSpeedData(Radar_PredictionData_t *pPredictionData, M0
 	return Status;
 }
 
-void *Radar_TakePicture1(void *parm)
+void *Radar_TakePicture(void *parm)
 {
-	//pthread_mutex_lock(&mutex1);
+	pthread_mutex_lock(&mutex1);
 	
 	Radar_Error Status = RADAR_ERROR_NONE;
 	char path[30] = "./capture.sh";
@@ -83,33 +88,7 @@ void *Radar_TakePicture1(void *parm)
 		usleep(20000);
 	}
 
-	//pthread_mutex_unlock(&mutex1);
-	pthread_exit(0);
-}
-
-void *Radar_TakePicture2(void *parm)
-{
-	pthread_mutex_lock(&mutex2);
-	
-	Radar_Error Status = RADAR_ERROR_NONE;
-	char path[30] = "./capture.sh";
-	char sysCmdBuf[256];
-	char *amount = (char*) parm;
-	char test[1] = " ";
-	strcat(path, test);
-	strcat(path, amount);
-
-	printf("%s\n\r", path);
-
-
-	if (Status == RADAR_ERROR_NONE)
-	{
-		bzero(sysCmdBuf, 256);
-		sprintf(sysCmdBuf, path);
-		system(sysCmdBuf);
-		usleep(20000);
-	}
-	pthread_mutex_unlock(&mutex2);
+	pthread_mutex_unlock(&mutex1);
 	pthread_exit(0);
 }
 
