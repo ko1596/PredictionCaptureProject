@@ -19,9 +19,6 @@
 #include <pthread.h>
 #include "Ta5320G_TIMER/m0All_Header.h"
 
-pthread_mutex_t mutex1;
-pthread_mutex_t mutex2;
-
 #define   INT8       int8_t
 #define   INT16      int16_t
 #define   INT32      int32_t
@@ -41,8 +38,6 @@ typedef int8_t Radar_Error;
 #define RADAR_ERROR_INVALID_STATU               ((Radar_Error) - 1)       /*!< Warning invalid status*/
 #define RADAR_ERROR_FILE_NOT_EXIST              ((Radar_Error) - 2)       /*!< The file not exist when opening file*/
 #define RADAR_ERROR_WORNG_DISTANCE              ((Radar_Error) - 3)       /*!< The X and Y distance equal 0*/
-#define RADAR_ERROR_CANT_INIT_MUTEX             ((Radar_Error) - 4)       /*!< Can't initializ the mutex*/
-
 /** @} Radar_define_Error_group */
 
 

@@ -129,17 +129,5 @@ Radar_Error Radar_InitData(Radar_PredictionData_t *pPredictionData)
 	pPredictionData->SpeedData.InitialSpeed = 0;
 	pPredictionData->Status = RADAR_PREDICTIONSTATUS_INVALID;
 
-	if (pthread_mutex_init(&mutex1, NULL) != 0)
-    {
-        printf("\n mutex init failed\n");
-        Status = RADAR_ERROR_CANT_INIT_MUTEX;
-    }
-
-	if (pthread_mutex_init(&mutex2, NULL) != 0)
-    {
-        printf("\n mutex init failed\n");
-        Status = RADAR_ERROR_CANT_INIT_MUTEX;
-    }
-
 	return Status;
 }
