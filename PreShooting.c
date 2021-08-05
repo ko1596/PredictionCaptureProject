@@ -67,8 +67,6 @@ Radar_Error Radar_GetObjectSpeedData(Radar_PredictionData_t *pPredictionData, M0
 
 void *Radar_TakePicture(void *parm)
 {
-	pthread_mutex_lock(&mutex1);
-	
 	Radar_Error Status = RADAR_ERROR_NONE;
 	char path[30] = "./capture.sh";
 	char sysCmdBuf[256];
@@ -88,7 +86,6 @@ void *Radar_TakePicture(void *parm)
 		usleep(20000);
 	}
 
-	pthread_mutex_unlock(&mutex1);
 	pthread_exit(0);
 }
 
