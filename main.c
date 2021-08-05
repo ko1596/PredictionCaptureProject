@@ -199,53 +199,49 @@ int main(int argc, char *argv[])
 
 		char delpath[30]="rm -r /home/root/pic/";
 
-		if (pPredictionDataA->Status == RADAR_PREDICTIONSTATUS_EMPTY || str[0]=='k')
+		if (pPredictionDataA->Status == RADAR_PREDICTIONSTATUS_EMPTY)
 		{
 			printf("clean\n\r");
 			memset(filenamel, 0, 20);
-			str[0]='0';
 			targetL = 0;
 			if (conterL<10 && conterL>0)
 			{
 				strcat(delpath, timeL);
 				system(delpath);
-				printf("It's too short del %s\n\r", timeL);
+				printf("It's too short delete %s\n\r", timeL);
 			}
 			conterL = 0;
 		}
 			
-		if (pPredictionDataB->Status == RADAR_PREDICTIONSTATUS_EMPTY || str[0]=='j')
+		if (pPredictionDataB->Status == RADAR_PREDICTIONSTATUS_EMPTY)
 		{
 			printf("clean\n\r");
 			memset(filenamer, 0, 20);
-			str[0]='0';
 			targetR = 0;
 			if (conterR< 10 && conterR>0)
 			{
 				strcat(delpath, timeR);
 				system(delpath);
-				printf("It's too short del %s\n\r", timeR);
+				printf("It's too short deleted %s\n\r", timeR);
 			}
 			conterR = 0;
 		}
 
-		if (str[0]=='u') //(IsPreShoot(pPredictionDataA, M0_radarA.data) && targetL == 0) || 
+		if (IsPreShoot(pPredictionDataA, M0_radarA.data) && targetL == 0)
 		{
-			str[0]='0';
 			sleep(2);
 			strcat(filenamel, "3 1 ");
-			strftime(timeL, 128, "%Y%m%d%H%M%S", newtime);
+			strftime(timeL, 128, "%Y%m%d%H%M%S_LEFT", newtime);
 			strcat(filenamel, timeL);
 			err = pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, filenamel);
 			if (err != 0) printf("\ncan't create thread :[%s]", strerror(err));
 			targetL++;
 		}
 
-		if (str[0]=='i') //(IsPreShoot(pPredictionDataB, M0_radarB.data) && targetR == 0) || 
+		if (IsPreShoot(pPredictionDataB, M0_radarB.data) && targetR == 0)
 		{
-			str[0]='0';
 			strcat(filenamer, "3 0 ");
-			strftime(timeR, 128, "%Y%m%d%H%M%S", newtime);
+			strftime(timeR, 128, "%Y%m%d%H%M%S_RIGHT", newtime);
 			strcat(filenamer, timeR);
 			err = pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, filenamer);
 			if (err != 0) printf("\ncan't create thread :[%s]", strerror(err));
