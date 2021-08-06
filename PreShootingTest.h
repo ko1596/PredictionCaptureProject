@@ -20,7 +20,7 @@
 #include "Ta5320G_TIMER/m0All_Header.h"
 
 /* Global variables ---------------------------------------------------------*/
-char str[1]; //for the KBhit to save detect keyboard event character
+extern char str[1]; //for the KBhit to save detect keyboard event character
 
 /* Private function ---------------------------------------------------------*/
 /**

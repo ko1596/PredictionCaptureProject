@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
 	uartA53M0_SetM0_currentRTC();
 
 	printf("FOR Test!!!\n");
-
+	sleep(1);
 	while (Status == RADAR_ERROR_NONE) //main loop
 	{
 		//system("clear");

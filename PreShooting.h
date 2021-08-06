@@ -33,8 +33,8 @@
 #define PRINTLF(LF) printf("--------------------------%s--------------------------\n\r",#LF)
 
 #define RADAR_PRINT               1
-#define RADAR_PRINT_SPEED					0
-#define RADAR_PRINT_XYZ	 	  			0
+#define RADAR_PRINT_SPEED					1
+#define RADAR_PRINT_XYZ	 	  			1
 #define RADAR_PRINT_STATUS        1
 
 /** @defgroup Radar_define_Error_group Error and Warning code returned by API
@@ -93,8 +93,8 @@ typedef struct Radar_PredictionData_t
   Radar_PredictionStatus Status;           /*!< One Speed measurement data for each target.*/
   bool target;
   int conter;
-  char filename[20];
-  char time[10];
+  char filename[30];
+  char time[30];
 } Radar_PredictionData_t;
 
 /**

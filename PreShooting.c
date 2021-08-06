@@ -11,7 +11,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "PreShooting.h"
 
-Radar_Error Radar_GetObjectStatus(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data)
+extern Radar_Error Radar_GetObjectStatus(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data)
 {
 	Radar_Error Status = RADAR_ERROR_NONE;
 
@@ -40,7 +40,7 @@ Radar_Error Radar_GetObjectStatus(Radar_PredictionData_t *pPredictionData, M0_RA
 	return Status;
 }
 
-Radar_Error Radar_GetObjectSpeedData(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data)
+extern Radar_Error Radar_GetObjectSpeedData(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data)
 {
 	Radar_Error Status = RADAR_ERROR_NONE;
 
@@ -87,7 +87,7 @@ void *Radar_TakePicture(void *parm)
 	pthread_exit(0);
 }
 
-Radar_Error Radar_PrintData(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data)
+extern Radar_Error Radar_PrintData(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data)
 {
 	Radar_Error Status = RADAR_ERROR_NONE;
 
@@ -127,8 +127,6 @@ Radar_Error Radar_PrintData(Radar_PredictionData_t *pPredictionData, M0_RADAR_DA
 		default:
 			break;
 		}
-		
-
 	#endif
 
 	#if RADAR_PRINT_XYZ
@@ -145,7 +143,7 @@ Radar_Error Radar_PrintData(Radar_PredictionData_t *pPredictionData, M0_RADAR_DA
 	return Status;
 }
 
-Radar_Error Radar_InitData(Radar_PredictionData_t *pPredictionData)
+extern Radar_Error Radar_InitData(Radar_PredictionData_t *pPredictionData)
 {
 	Radar_Error Status = RADAR_ERROR_NONE;
 	pPredictionData->SpeedData.DeltaV = 0;
@@ -158,12 +156,11 @@ Radar_Error Radar_InitData(Radar_PredictionData_t *pPredictionData)
 	return Status;
 }
 
-Radar_Error Radar_CleanData(Radar_PredictionData_t *pPredictionData)
+extern Radar_Error Radar_CleanData(Radar_PredictionData_t *pPredictionData)
 {
 	Radar_Error Status = RADAR_ERROR_NONE;
 	if (pPredictionData->Status == RADAR_PREDICTIONSTATUS_EMPTY)
 	{
-		printf("clean\n\r");
 		if (pPredictionData->conter > 0 && pPredictionData->conter < 10)
 			Status = Radar_DeleteFile(pPredictionData->time);
 		pPredictionData->target = false;
@@ -190,14 +187,17 @@ bool IsPreShoot(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME dat
 			return data.obj_distance_R < RIGHT_DETECT_DISTANCE;
 		else
 			return data.obj_distance_R < LEFT_DETECT_DISTANCE;
+	else
+		return false;
 }
 
-Radar_Error Radar_PreShoot(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data)
+extern Radar_Error Radar_PreShoot(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data)
 {
 	time_t now = time(NULL);
 	struct tm *newtime = localtime(&now);
 	Radar_Error Status = RADAR_ERROR_NONE;
 	int err;
+
 	if (IsPreShoot(pPredictionData, data) && pPredictionData->target == false)
 		if (data.L_R == 0)
 		{
