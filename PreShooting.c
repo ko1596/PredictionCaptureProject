@@ -155,3 +155,44 @@ Radar_Error Radar_DeleteFile(char *filename)
 	printf("It's too short delete %s\n\r", filename);
 	return Status;
 }
+
+bool IsPreShoot(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data)
+{
+	if(data.L_R == 0)
+		return pPredictionData->Status == (RADAR_PREDICTIONSTATUS_PARKING || RADAR_PREDICTIONSTATUS_COMING) && data.obj_distance_R < 30;
+	else
+		return pPredictionData->Status == (RADAR_PREDICTIONSTATUS_PARKING || RADAR_PREDICTIONSTATUS_COMING) && data.obj_distance_R < 18;
+}
+
+Radar_Error Radar_PreShoot(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data)
+{
+	time_t now = time(NULL);
+	struct tm *newtime = localtime(&now);
+	Radar_Error Status = RADAR_ERROR_NONE;
+	int err;
+	if(IsPreShoot(pPredictionData, data) && pPredictionData->target == false)
+		if(data.L_R == 0)
+		{
+			strcat(pPredictionData->filename, "3 0 ");
+			strftime(pPredictionData->time, 128, "%Y%m%d%H%M%S_RIGHT", newtime);
+			strcat(pPredictionData->filename, pPredictionData->time);
+			err = pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, pPredictionData->filename);
+			if (err != 0) printf("\ncan't create thread :[%s]", strerror(err));
+			pPredictionData->target = true;
+		}
+		else
+		{
+			strcat(pPredictionData->filename, "3 1 ");
+			strftime(pPredictionData->time, 128, "%Y%m%d%H%M%S_LEFT", newtime);
+			strcat(pPredictionData->filename, pPredictionData->time);
+			err = pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, pPredictionData->filename);
+			if (err != 0) printf("\ncan't create thread :[%s]", strerror(err));
+			pPredictionData->target = true;
+		}
+	
+	if(pPredictionData->target)
+		pPredictionData->time++;
+	return Status;
+}
+
+/************************ (C) COPYRIGHT Joey Ke *****END OF FILE****/

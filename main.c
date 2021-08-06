@@ -24,44 +24,7 @@
 #include "cJSON.h"
 #include "Ta5320G_TIMER/m0All_Header.h"
 #include "PreShooting.h"
-
-/* Global variables ---------------------------------------------------------*/
-char str[1]; //for the KBhit to save detect keyboard event character
-
-/* Private function ---------------------------------------------------------*/
-/**
- * @brief scan the keyboard event to create the thread
- * 
- * @param parm 		NONE
- * @return void* 
- */
-void *KBhit(void *parm);
-
-/**
- * @brief Write radar information to CSV file 
- * 
- * @param parm 		detect left or right var.
- * @return void* 
- */
-void *WriteCSV(void *parm);
-
-/**
- * @brief Use today's date as the file name 
- * 
- * @param name the filename ptr
- */
-void GetCSVName(char *name);
-
-/**
- * @brief prediction shooting
- * 
- * @param pPredictionData                 all of the prediction data 
- * @param data                            for radar distance
- * @return bool -						  prediction shooting resulte
- */
-bool IsPreShoot(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data);
-
-
+#include "PreShootingTest.h"
 
 int main(int argc, char *argv[])
 {
@@ -71,17 +34,6 @@ int main(int argc, char *argv[])
 	Radar_PredictionData_t *pPredictionDataA = &PredictionDataA;
 	Radar_PredictionData_t *pPredictionDataB = &PredictionDataB;
 	Radar_Error Status;
-	int targetL = 0;
-	int targetR = 0;
-	int conterL = 0;
-	int conterR = 0;
-	char filenamel[20];
-	char filenamer[20];
-	char timeL[10];
-	char timeR[10];
-	int err;
-	time_t now = time(NULL);
-	struct tm *newtime = localtime(&now);
 	/* USER CODE END PV */
 
 	/* Initialize all parameters */
@@ -202,104 +154,12 @@ int main(int argc, char *argv[])
 		Status = Radar_CleanData(pPredictionDataA);
 		Status = Radar_CleanData(pPredictionDataB);
 
-		if (IsPreShoot(pPredictionDataA, M0_radarA.data) && targetL == 0)
-		{
-			sleep(2);
-			strcat(filenamel, "3 1 ");
-			strftime(timeL, 128, "%Y%m%d%H%M%S_LEFT", newtime);
-			strcat(filenamel, timeL);
-			err = pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, filenamel);
-			if (err != 0) printf("\ncan't create thread :[%s]", strerror(err));
-			targetL++;
-		}
-
-		if (IsPreShoot(pPredictionDataB, M0_radarB.data) && targetR == 0)
-		{
-			strcat(filenamer, "3 0 ");
-			strftime(timeR, 128, "%Y%m%d%H%M%S_RIGHT", newtime);
-			strcat(filenamer, timeR);
-			err = pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, filenamer);
-			if (err != 0) printf("\ncan't create thread :[%s]", strerror(err));
-			targetR++;
-		}
-
-		if (targetL>0) conterL++;
-		if (targetR>0) conterR++;
-
+		Status = Radar_PreShoot(pPredictionDataA, M0_radarA.data);
+		Status = Radar_PreShoot(pPredictionDataB, M0_radarB.data);
 
 		sleep(1);
 	}
 
 	return 0;
-}
-
-void *KBhit(void *parm)
-{
-	int err;
-	while (true)
-	{
-		
-		fgets(str, 10, stdin);
-		if (str[0] == 'l')
-			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&WriteCSV, (void *)1);
-		else if (str[0] == 'r')
-			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&WriteCSV, (void *)0);
-		else if (str[0] == 'c'){
-			err = pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, "3 1 test");
-			if (err<0) printf("error: %s", strerror(errno));
-		}
-			
-	}
-}
-
-void *WriteCSV(void *parm)
-{
-	int LF = (int *)parm;
-	char filename[128];
-	FILE *fp;
-	M0_RADAR_DATA_FRAME data;
-
-	GetCSVName(filename);
-	fp = fopen(filename, "w+");
-
-	fprintf(fp, "RadarLR, X, Y, Z, Distance, Power");
-
-	while (str[0] != 's')
-	{
-		data = LF ? M0_radarA.data : M0_radarB.data;
-
-		fprintf(fp, "\n%d,%d,%d,%d,%d,%d",
-				data.L_R,
-				data.obj_position_X,
-				data.obj_position_Y,
-				data.obj_position_Z,
-				data.obj_distance_R,
-				data.power);
-
-		printf("recording\n\r");
-		sleep(1);
-	};
-
-	fclose(fp);
-	printf("\n %sfile created\n\r", filename);
-	pthread_exit(NULL);
-	return 0;
-}
-
-void GetCSVName(char *name)
-{
-	time_t now = time(NULL);
-	struct tm *newtime = localtime(&now);
-	strftime(name, 128, "%Y%m%d%H%M%S", newtime);
-	printf("\nCreating %s.csv file\n\r", name);
-	strcat(name, ".csv");
-}
-
-bool IsPreShoot(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data)
-{
-	if(data.L_R == 0)
-		return pPredictionData->Status == (RADAR_PREDICTIONSTATUS_PARKING || RADAR_PREDICTIONSTATUS_COMING) && data.obj_distance_R < 30;
-	else
-		return pPredictionData->Status == (RADAR_PREDICTIONSTATUS_PARKING || RADAR_PREDICTIONSTATUS_COMING) && data.obj_distance_R < 18;
 }
 

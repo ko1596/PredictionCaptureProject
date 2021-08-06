@@ -12,6 +12,7 @@
 #ifndef PRESHOOTING_H
 #define PRESHOOTING_H
   /* Includes ------------------------------------------------------------------*/
+#include <time.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <unistd.h>
@@ -143,6 +144,24 @@ Radar_Error Radar_CleanData(Radar_PredictionData_t *pPredictionData);
  * 
  * @param filename the floder name
  */
-Radar_Error DeleteFile(char *filename);
+Radar_Error Radar_DeleteFile(char *filename);
+
+/**
+ * @brief prediction shooting
+ * 
+ * @param pPredictionData                 all of the prediction data 
+ * @param data                            for radar distance
+ * @return bool -						  prediction shooting resulte
+ */
+bool IsPreShoot(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data);
+
+/**
+ * @brief Determine whether to take a picture 
+ * 
+ * @param pPredictionData                 all of the prediction data 
+ * @param data                            for radar distance
+ * @return Radar_Error 
+ */
+Radar_Error Radar_PreShoot(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data);
 #endif  /* PRESHOOTING_H */
 /************************ (C) COPYRIGHT Joey Ke *****END OF FILE****/

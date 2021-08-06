@@ -5,7 +5,7 @@ LIB = -pthread -ljson-c
 JSON_C_DIR = /usr/local
 CFLAGS += -I$(JSON_C_DIR)/include/json-c
 LDFLAGS += -L$(JSON_C_DIR)/lib
-SRC_1 = cJSON.c PreShooting.c
+SRC_1 = cJSON.c PreShooting.c PreShootingTest.c
 DIR = Ta5320G_TIMER
 SRC_2 = $(DIR)/Ta53M0.c $(DIR)/m0Uart_rx.c $(DIR)/m0Uart_tx.c $(DIR)/TstA53M0.c
 
