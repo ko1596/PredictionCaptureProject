@@ -91,27 +91,57 @@ Radar_Error Radar_PrintData(Radar_PredictionData_t *pPredictionData, M0_RADAR_DA
 {
 	Radar_Error Status = RADAR_ERROR_NONE;
 
-	//data.L_R ? PRINTLF(LEFT) : PRINTLF(RIGHT); //PRINTLF(LF) printf("--------------------------#LF--------------------------\n\r")
+	#if RADAR_PRINT
+	data.L_R ? PRINTLF(LEFT) : PRINTLF(RIGHT); //PRINTLF(LF) printf("--------------------------#LF--------------------------\n\r")
 
-#if RADAR_PRINT_SPEED
-	printf("initX: %3d\tDeltaX: %2d\n\rinitV: %3d\tDeltaV: %2d\n\rStatus: %1d\n\r",
-		   pPredictionData->SpeedData.InitialDistance,
-		   pPredictionData->SpeedData.DeltaX,
-		   pPredictionData->SpeedData.InitialSpeed,
-		   pPredictionData->SpeedData.DeltaV,
-		   pPredictionData->Status);
-#endif
+	#if RADAR_PRINT_SPEED
+		printf("initX: %3d\tDeltaX: %2d\n\rinitV: %3d\tDeltaV: %2d\n\r",
+			pPredictionData->SpeedData.InitialDistance,
+			pPredictionData->SpeedData.DeltaX,
+			pPredictionData->SpeedData.InitialSpeed,
+			pPredictionData->SpeedData.DeltaV);
+	#endif
 
-#if RADAR_PRINT_XYZ
-	printf("RadarA X[%02d] Y[%02d] Z[%02d] D[%02d] P[%04d]\n\r",
-		   data.obj_position_X,
-		   data.obj_position_Y,
-		   data.obj_position_Z,
-		   data.obj_distance_R,
-		   data.power);
-#endif
+	#if RADAR_PRINT_STATUS
+		printf("Status: ");
+		switch (pPredictionData->Status)
+		{
+		case RADAR_PREDICTIONSTATUS_COMING:
+			printf("Comeing\n\r");
+			break;
+		case RADAR_PREDICTIONSTATUS_LEAVING:
+			printf("Leaving\n\r");
+			break;
+		case RADAR_PREDICTIONSTATUS_PARKING:
+			printf("Parking\n\r");
+			break;
+		case RADAR_PREDICTIONSTATUS_PARKED:
+			printf("Parked\n\r");
+			break;
+		case RADAR_PREDICTIONSTATUS_EMPTY:
+			printf("Empty\n\r");
+			break;
+		case RADAR_PREDICTIONSTATUS_INVALID:
+			printf("Invalid\n\r");
+			break;
+		default:
+			break;
+		}
+		
 
-	//printf("--------------------------------------------------------\n\r");
+	#endif
+
+	#if RADAR_PRINT_XYZ
+		printf("RadarA X[%02d] Y[%02d] Z[%02d] D[%02d] P[%04d]\n\r",
+			data.obj_position_X,
+			data.obj_position_Y,
+			data.obj_position_Z,
+			data.obj_distance_R,
+			data.power);
+	#endif
+
+	printf("--------------------------------------------------------\n\r");
+	#endif
 	return Status;
 }
 
