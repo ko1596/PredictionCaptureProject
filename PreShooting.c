@@ -125,6 +125,33 @@ Radar_Error Radar_InitData(Radar_PredictionData_t *pPredictionData)
 	pPredictionData->SpeedData.InitialDistance = 0;
 	pPredictionData->SpeedData.InitialSpeed = 0;
 	pPredictionData->Status = RADAR_PREDICTIONSTATUS_INVALID;
+	pPredictionData->target = false;
+	pPredictionData->conter = 0;
+	pPredictionData->time = 0;
+	return Status;
+}
 
+Radar_Error Radar_CleanData(Radar_PredictionData_t *pPredictionData)
+{
+	Radar_Error Status = RADAR_ERROR_NONE;
+	if (pPredictionData->Status == RADAR_PREDICTIONSTATUS_EMPTY)
+	{
+		printf("clean\n\r");
+		if(pPredictionData->conter>0 && pPredictionData->conter<10)
+			Status = Radar_DeleteFile(pPredictionData->time);
+		pPredictionData->target = false;
+		pPredictionData->conter = 0;
+		memset(pPredictionData->filename, 0, 20);
+	}
+	return Status;
+}
+
+Radar_Error Radar_DeleteFile(char *filename)
+{
+	Radar_Error Status = RADAR_ERROR_NONE;
+	char delpath[30]="rm -r /home/root/pic/";
+	strcat(delpath, filename);
+	system(delpath);
+	printf("It's too short delete %s\n\r", filename);
 	return Status;
 }

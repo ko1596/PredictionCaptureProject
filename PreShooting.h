@@ -82,6 +82,10 @@ typedef struct Radar_PredictionData_t
 {
   Radar_ObjectSpeedData_t SpeedData;       /*!< all possible prediction status mode*/
   Radar_PredictionStatus Status;           /*!< One Speed measurement data for each target.*/
+  bool target;
+  int conter;
+  char filename[20];
+  char time[10];
 } Radar_PredictionData_t;
 
 /**
@@ -125,5 +129,20 @@ Radar_Error Radar_PrintData(Radar_PredictionData_t *pPredictionData, M0_RADAR_DA
  * @return Radar_Error 
  */
 Radar_Error Radar_InitData(Radar_PredictionData_t *pPredictionData);
+
+/**
+ * @brief Clear the data detected this time 
+ * 
+ * @param pPredictionData 
+ * @return Radar_Error 
+ */
+Radar_Error Radar_CleanData(Radar_PredictionData_t *pPredictionData);
+
+/**
+ * @brief delete the worng picture file
+ * 
+ * @param filename the floder name
+ */
+Radar_Error DeleteFile(char *filename);
 #endif  /* PRESHOOTING_H */
 /************************ (C) COPYRIGHT Joey Ke *****END OF FILE****/

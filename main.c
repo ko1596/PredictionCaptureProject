@@ -61,6 +61,8 @@ void GetCSVName(char *name);
  */
 bool IsPreShoot(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data);
 
+
+
 int main(int argc, char *argv[])
 {
 	/* USER CODE BEGIN PV */
@@ -197,35 +199,8 @@ int main(int argc, char *argv[])
 		Status = Radar_GetObjectStatus(pPredictionDataB, M0_radarB.data);
 		Status = Radar_PrintData(pPredictionDataB, M0_radarB.data);
 
-		char delpath[30]="rm -r /home/root/pic/";
-
-		if (pPredictionDataA->Status == RADAR_PREDICTIONSTATUS_EMPTY)
-		{
-			printf("clean\n\r");
-			memset(filenamel, 0, 20);
-			targetL = 0;
-			if (conterL<10 && conterL>0)
-			{
-				strcat(delpath, timeL);
-				system(delpath);
-				printf("It's too short delete %s\n\r", timeL);
-			}
-			conterL = 0;
-		}
-			
-		if (pPredictionDataB->Status == RADAR_PREDICTIONSTATUS_EMPTY)
-		{
-			printf("clean\n\r");
-			memset(filenamer, 0, 20);
-			targetR = 0;
-			if (conterR< 10 && conterR>0)
-			{
-				strcat(delpath, timeR);
-				system(delpath);
-				printf("It's too short deleted %s\n\r", timeR);
-			}
-			conterR = 0;
-		}
+		Status = Radar_CleanData(pPredictionDataA);
+		Status = Radar_CleanData(pPredictionDataB);
 
 		if (IsPreShoot(pPredictionDataA, M0_radarA.data) && targetL == 0)
 		{
@@ -251,7 +226,6 @@ int main(int argc, char *argv[])
 		if (targetL>0) conterL++;
 		if (targetR>0) conterR++;
 
-		printf("conterl: %d\n\r", conterL);
 
 		sleep(1);
 	}
@@ -328,3 +302,4 @@ bool IsPreShoot(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME dat
 	else
 		return pPredictionData->Status == (RADAR_PREDICTIONSTATUS_PARKING || RADAR_PREDICTIONSTATUS_COMING) && data.obj_distance_R < 18;
 }
+
