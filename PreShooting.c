@@ -127,7 +127,6 @@ Radar_Error Radar_InitData(Radar_PredictionData_t *pPredictionData)
 	pPredictionData->Status = RADAR_PREDICTIONSTATUS_INVALID;
 	pPredictionData->target = false;
 	pPredictionData->conter = 0;
-	pPredictionData->time = 0;
 	return Status;
 }
 
@@ -191,7 +190,7 @@ Radar_Error Radar_PreShoot(Radar_PredictionData_t *pPredictionData, M0_RADAR_DAT
 		}
 	
 	if(pPredictionData->target)
-		pPredictionData->time++;
+		pPredictionData->conter++;
 	return Status;
 }
 
