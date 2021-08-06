@@ -24,6 +24,12 @@
 #define   INT16      int16_t
 #define   INT32      int32_t
 
+#define LEFT_DETECT_DISTANCE           18
+#define RIGHT_DETECT_DISTANCE          30
+#define LEFT_PICTURE_AMOUNT            "3 1 "
+#define RIGHT_PICTURE_AMOUNT           "3 0 "
+#define SAVE_PICTURE_PATH              "rm -r /home/root/pic/"
+
 #define PRINTLF(LF) printf("--------------------------%s--------------------------\n\r",#LF)
 
 #define RADAR_PRINT_SPEED					0
@@ -97,7 +103,9 @@ typedef struct Radar_PredictionData_t
  * @return  RADAR_ERROR_NONE              Success
  * @return  "Other error code"            See ::Radar_Error
  */
-Radar_Error Radar_GetObjectStatus(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data);
+Radar_Error Radar_GetObjectStatus(
+    Radar_PredictionData_t *pPredictionData,
+    M0_RADAR_DATA_FRAME data);
 
 /**
  * @brief Return Object Speed Data
@@ -106,7 +114,9 @@ Radar_Error Radar_GetObjectStatus(Radar_PredictionData_t *pPredictionData, M0_RA
  * @param data                            for radar distance
  * @return Radar_Error 
  */
-Radar_Error Radar_GetObjectSpeedData(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data);
+Radar_Error Radar_GetObjectSpeedData(
+    Radar_PredictionData_t *pPredictionData, 
+    M0_RADAR_DATA_FRAME data);
 
 /**
  * @brief Run the take photo bash that named cap.sh in /home/root/
@@ -121,7 +131,9 @@ void *Radar_TakePicture(void *parm);
  * @param data               for radar distance
  * @return Radar_Error 
  */
-Radar_Error Radar_PrintData(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data);
+Radar_Error Radar_PrintData(
+    Radar_PredictionData_t *pPredictionData,
+    M0_RADAR_DATA_FRAME data);
 
 /**
  * @brief Initial all of the data and status
@@ -153,7 +165,9 @@ Radar_Error Radar_DeleteFile(char *filename);
  * @param data                            for radar distance
  * @return bool -						  prediction shooting resulte
  */
-bool IsPreShoot(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data);
+bool IsPreShoot(
+    Radar_PredictionData_t *pPredictionData, 
+    M0_RADAR_DATA_FRAME data);
 
 /**
  * @brief Determine whether to take a picture 
@@ -162,6 +176,8 @@ bool IsPreShoot(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME dat
  * @param data                            for radar distance
  * @return Radar_Error 
  */
-Radar_Error Radar_PreShoot(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data);
+Radar_Error Radar_PreShoot(
+    Radar_PredictionData_t *pPredictionData, 
+    M0_RADAR_DATA_FRAME data);
 #endif  /* PRESHOOTING_H */
 /************************ (C) COPYRIGHT Joey Ke *****END OF FILE****/
