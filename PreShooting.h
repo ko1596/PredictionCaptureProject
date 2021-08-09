@@ -32,7 +32,7 @@
 
 #define PRINTLF(LF) printf("--------------------------%s--------------------------\n\r",#LF)
 
-#define RADAR_PRINT               1
+#define RADAR_PRINT               0
 #define RADAR_PRINT_SPEED					1
 #define RADAR_PRINT_XYZ	 	  			1
 #define RADAR_PRINT_STATUS        1

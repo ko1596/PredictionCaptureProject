@@ -164,18 +164,24 @@ extern Radar_Error Radar_CleanData(Radar_PredictionData_t *pPredictionData)
 	Radar_Error Status = RADAR_ERROR_NONE;
 	if (pPredictionData->Status == RADAR_PREDICTIONSTATUS_EMPTY)
 	{
-		if (pPredictionData->conter > 0 && pPredictionData->conter < 10)
-		{
-
-			printf("delete file\n\r");
-			Status = Radar_DeleteFile(pPredictionData->time);
-		}
+		
 		pPredictionData->target = false;
-		pPredictionData->conter = 0;
+		if(pPredictionData->conter > 0 && pPredictionData->conter <= 4)
+			pPredictionData->conter++;
+		else if (pPredictionData->conter > 4 && pPredictionData->conter < 10)
+		{
+			Status = Radar_DeleteFile(pPredictionData->time);
+			pPredictionData->conter = 0;
+			memset(pPredictionData->time, 0, 30);
+		}
+		else
+		{
+			pPredictionData->conter = 0;
+			memset(pPredictionData->time, 0, 30);
+		}
 
 		memset(pPredictionData->filename, 0, 30);
-
-		memset(pPredictionData->time, 0, 30);
+		
 
 	}
 	return Status;
