@@ -152,8 +152,9 @@ int main(int argc, char *argv[])
 		Status = Radar_PrintData(pPredictionDataB, M0_radarB.data);
 
 		Status = Radar_CleanData(pPredictionDataA);
+		printf("cleaned DATA A\n\r");
 		Status = Radar_CleanData(pPredictionDataB);
-
+		printf("cleaned DATA B\n\r");
 		Status = Radar_PreShoot(pPredictionDataA, M0_radarA.data);
 		Status = Radar_PreShoot(pPredictionDataB, M0_radarB.data);
 

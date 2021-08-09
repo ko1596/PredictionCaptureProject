@@ -70,8 +70,8 @@ void *Radar_TakePicture(void *parm)
 	char path[30] = "./capture.sh";
 	char sysCmdBuf[256];
 	char *argc = (char *)parm;
-	char blink[1] = " ";
-	strcat(path, blink);
+	char blank[1] = " ";
+	strcat(path, blank);
 	strcat(path, argc);
 
 	printf("%s\n\r", path);
@@ -145,6 +145,7 @@ extern Radar_Error Radar_PrintData(Radar_PredictionData_t *pPredictionData, M0_R
 
 extern Radar_Error Radar_InitData(Radar_PredictionData_t *pPredictionData)
 {
+	printf("data initialized\n\r");
 	Radar_Error Status = RADAR_ERROR_NONE;
 	pPredictionData->SpeedData.DeltaV = 0;
 	pPredictionData->SpeedData.DeltaX = 0;
@@ -153,6 +154,8 @@ extern Radar_Error Radar_InitData(Radar_PredictionData_t *pPredictionData)
 	pPredictionData->Status = RADAR_PREDICTIONSTATUS_INVALID;
 	pPredictionData->target = false;
 	pPredictionData->conter = 0;
+	memset(pPredictionData->filename, 0, 30);
+	memset(pPredictionData->time, 0, 30);
 	return Status;
 }
 
@@ -162,10 +165,18 @@ extern Radar_Error Radar_CleanData(Radar_PredictionData_t *pPredictionData)
 	if (pPredictionData->Status == RADAR_PREDICTIONSTATUS_EMPTY)
 	{
 		if (pPredictionData->conter > 0 && pPredictionData->conter < 10)
+		{
+
+			printf("delete file\n\r");
 			Status = Radar_DeleteFile(pPredictionData->time);
+		}
 		pPredictionData->target = false;
 		pPredictionData->conter = 0;
-		memset(pPredictionData->filename, 0, 20);
+
+		memset(pPredictionData->filename, 0, 30);
+
+		memset(pPredictionData->time, 0, 30);
+
 	}
 	return Status;
 }
@@ -173,7 +184,7 @@ extern Radar_Error Radar_CleanData(Radar_PredictionData_t *pPredictionData)
 Radar_Error Radar_DeleteFile(char *filename)
 {
 	Radar_Error Status = RADAR_ERROR_NONE;
-	char delpath[30] = SAVE_PICTURE_PATH;
+	char delpath[40] = SAVE_PICTURE_PATH;
 	strcat(delpath, filename);
 	system(delpath);
 	printf("It's too short delete %s\n\r", filename);
@@ -183,10 +194,7 @@ Radar_Error Radar_DeleteFile(char *filename)
 bool IsPreShoot(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data)
 {
 	if (pPredictionData->Status == RADAR_PREDICTIONSTATUS_PARKING || pPredictionData->Status == RADAR_PREDICTIONSTATUS_COMING)
-		if (data.L_R == 0)
-			return data.obj_distance_R < RIGHT_DETECT_DISTANCE;
-		else
-			return data.obj_distance_R < LEFT_DETECT_DISTANCE;
+		return data.L_R ?  data.obj_distance_R < LEFT_DETECT_DISTANCE : data.obj_distance_R < RIGHT_DETECT_DISTANCE;
 	else
 		return false;
 }
@@ -199,10 +207,10 @@ extern Radar_Error Radar_PreShoot(Radar_PredictionData_t *pPredictionData, M0_RA
 	int err;
 
 	if (IsPreShoot(pPredictionData, data) && pPredictionData->target == false)
-		if (data.L_R == 0)
+		if (data.L_R)
 		{
-			strcat(pPredictionData->filename, RIGHT_PICTURE_AMOUNT);
-			strftime(pPredictionData->time, 128, "%Y%m%d%H%M%S_RIGHT", newtime);
+			strcat(pPredictionData->filename, LEFT_PICTURE_AMOUNT);
+			strftime(pPredictionData->time, 128, "%Y%m%d%H%M%S_LEFT", newtime);
 			strcat(pPredictionData->filename, pPredictionData->time);
 			err = pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, pPredictionData->filename);
 			if (err != 0)
@@ -211,8 +219,8 @@ extern Radar_Error Radar_PreShoot(Radar_PredictionData_t *pPredictionData, M0_RA
 		}
 		else
 		{
-			strcat(pPredictionData->filename, LEFT_PICTURE_AMOUNT);
-			strftime(pPredictionData->time, 128, "%Y%m%d%H%M%S_LEFT", newtime);
+			strcat(pPredictionData->filename, RIGHT_PICTURE_AMOUNT);
+			strftime(pPredictionData->time, 128, "%Y%m%d%H%M%S_RIGHT", newtime);
 			strcat(pPredictionData->filename, pPredictionData->time);
 			err = pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, pPredictionData->filename);
 			if (err != 0)
