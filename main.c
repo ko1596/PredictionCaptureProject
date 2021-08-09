@@ -140,16 +140,14 @@ int main(int argc, char *argv[])
 	sleep(1);
 	while (Status == RADAR_ERROR_NONE) //main loop
 	{
-		//system("clear");
-		pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&KBhit, NULL);
 
 		Status = Radar_GetObjectSpeedData(pPredictionDataA, M0_radarA.data);
 		Status = Radar_GetObjectStatus(pPredictionDataA, M0_radarA.data);
-		Status = Radar_PrintData(pPredictionDataA, M0_radarA.data);
+		
 
 		Status = Radar_GetObjectSpeedData(pPredictionDataB, M0_radarB.data);
 		Status = Radar_GetObjectStatus(pPredictionDataB, M0_radarB.data);
-		Status = Radar_PrintData(pPredictionDataB, M0_radarB.data);
+
 
 		Status = Radar_CleanData(pPredictionDataA);
 		Status = Radar_CleanData(pPredictionDataB);

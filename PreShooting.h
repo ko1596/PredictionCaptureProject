@@ -24,7 +24,7 @@
 #define   INT16      int16_t
 #define   INT32      int32_t
 
-#define LEFT_DETECT_DISTANCE           18
+#define LEFT_DETECT_DISTANCE           15
 #define RIGHT_DETECT_DISTANCE          30
 #define LEFT_PICTURE_AMOUNT            "3 1 "
 #define RIGHT_PICTURE_AMOUNT           "3 0 "
@@ -32,7 +32,7 @@
 
 #define PRINTLF(LF) printf("--------------------------%s--------------------------\n\r",#LF)
 
-#define RADAR_PRINT               0
+#define RADAR_PRINT               1
 #define RADAR_PRINT_SPEED					1
 #define RADAR_PRINT_XYZ	 	  			1
 #define RADAR_PRINT_STATUS        1
