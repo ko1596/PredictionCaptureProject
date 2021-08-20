@@ -89,12 +89,13 @@ typedef struct Radar_ObjectSpeedData_t
  */
 typedef struct Radar_PredictionData_t
 {
-  Radar_ObjectSpeedData_t SpeedData;       /*!< all possible prediction status mode*/
+  Radar_ObjectSpeedData_t SpeedData;       /*!< all possible prediction status mode>*/
   Radar_PredictionStatus Status;           /*!< One Speed measurement data for each target.*/
-  bool target;
-  int conter;
-  char filename[30];
-  char time[30];
+  bool target;                             /*!< Start capture thread.>*/
+  bool captured;                           /*!< Determine whether the photo has been taken > */
+  int conter;                              /*!< Calculate the time after startup.*/
+  char filename[30];                       /*!< File full path and file name*/
+  char time[30];                           /*!< Use time as the name of the current folder */
 } Radar_PredictionData_t;
 
 /**

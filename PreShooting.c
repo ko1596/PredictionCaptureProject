@@ -153,6 +153,7 @@ extern Radar_Error Radar_InitData(Radar_PredictionData_t *pPredictionData)
 	pPredictionData->SpeedData.InitialSpeed = 0;
 	pPredictionData->Status = RADAR_PREDICTIONSTATUS_INVALID;
 	pPredictionData->target = false;
+	pPredictionData->captured = false;
 	pPredictionData->conter = 0;
 	memset(pPredictionData->filename, 0, 30);
 	memset(pPredictionData->time, 0, 30);
@@ -162,6 +163,7 @@ extern Radar_Error Radar_InitData(Radar_PredictionData_t *pPredictionData)
 extern Radar_Error Radar_CleanData(Radar_PredictionData_t *pPredictionData)
 {
 	Radar_Error Status = RADAR_ERROR_NONE;
+
 	if (pPredictionData->Status == RADAR_PREDICTIONSTATUS_EMPTY)
 	{
 		
@@ -184,6 +186,12 @@ extern Radar_Error Radar_CleanData(Radar_PredictionData_t *pPredictionData)
 		
 
 	}
+
+	if (pPredictionData->conter > 4)
+		pPredictionData->captured = true;
+	else
+		pPredictionData->captured = false;
+
 	return Status;
 }
 
