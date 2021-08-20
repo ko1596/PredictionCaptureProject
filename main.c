@@ -24,7 +24,6 @@
 #include "cJSON.h"
 #include "Ta5320G_TIMER/m0All_Header.h"
 #include "PreShooting.h"
-#include "PreShootingTest.h"
 
 int main(int argc, char *argv[])
 {
@@ -140,14 +139,11 @@ int main(int argc, char *argv[])
 	sleep(1);
 	while (Status == RADAR_ERROR_NONE) //main loop
 	{
-
 		Status = Radar_GetObjectSpeedData(pPredictionDataA, M0_radarA.data);
 		Status = Radar_GetObjectStatus(pPredictionDataA, M0_radarA.data);
-		
 
 		Status = Radar_GetObjectSpeedData(pPredictionDataB, M0_radarB.data);
 		Status = Radar_GetObjectStatus(pPredictionDataB, M0_radarB.data);
-
 
 		Status = Radar_CleanData(pPredictionDataA);
 		Status = Radar_CleanData(pPredictionDataB);
