@@ -18,7 +18,7 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include <pthread.h>
-#include "Ta5320G_TIMER/m0All_Header.h"
+#include "../Ta5320G_TIMER/m0All_Header.h"
 
 #define   INT8       int8_t
 #define   INT16      int16_t
