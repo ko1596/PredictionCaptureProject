@@ -151,6 +151,9 @@ int main(int argc, char *argv[])
 		Status = Radar_PreShoot(pPredictionDataA, M0_radarA.data);
 		Status = Radar_PreShoot(pPredictionDataB, M0_radarB.data);
 
+		Status = Radar_PrintData(pPredictionDataA, M0_radarA.data);
+		Status = Radar_PrintData(pPredictionDataB, M0_radarB.data);
+
 		sleep(1);
 	}
 
