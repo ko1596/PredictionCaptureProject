@@ -24,6 +24,7 @@
 #include "cJSON.h"
 #include "Ta5320G_TIMER/m0All_Header.h"
 #include "PredictionCaptureProject/PreShooting.h"
+#include "PredictionCaptureProject/PreShootingTest.h"
 
 int main(int argc, char *argv[])
 {
@@ -33,12 +34,15 @@ int main(int argc, char *argv[])
 	Radar_PredictionData_t *pPredictionDataA = &PredictionDataA;
 	Radar_PredictionData_t *pPredictionDataB = &PredictionDataB;
 	Radar_Error Status;
+	Radar_ABData_t ABData;
 	/* USER CODE END PV */
 
 	/* Initialize all parameters */
 	Status = RADAR_ERROR_NONE;
 	Status = Radar_InitData(pPredictionDataA);
 	Status = Radar_InitData(pPredictionDataB);
+	ABData.RadarA = pPredictionDataA;
+	ABData.RadarB = pPredictionDataB;
 
 	time_t rawtime;
 	struct tm *info;
@@ -137,6 +141,7 @@ int main(int argc, char *argv[])
 
 	printf("FOR Test!!!\n");
 	sleep(1);
+	pthread_create(&thread_uartA53M0_Rx, &attr_Rx, WriteCSV, &ABData);
 	while (Status == RADAR_ERROR_NONE) //main loop
 	{
 		Status = Radar_GetObjectSpeedData(pPredictionDataA, M0_radarA.data);

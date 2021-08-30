@@ -98,6 +98,12 @@ typedef struct Radar_PredictionData_t
   char time[30];                           /*!< Use time as the name of the current folder */
 } Radar_PredictionData_t;
 
+typedef struct Radar_ABData_t
+{
+  Radar_PredictionData_t *RadarA;
+  Radar_PredictionData_t *RadarB;
+} Radar_ABData_t;
+
 /**
  * @brief Return the radar status
  *

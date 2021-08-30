@@ -11,55 +11,37 @@
 /* Includes ------------------------------------------------------------------*/
 #include "PreShootingTest.h"
 
-void *KBhit(void *parm)
-{
-	int err;
-	while (true)
-	{
-		
-		fgets(str, 10, stdin);
-		if (str[0] == 'l')
-			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&WriteCSV, (void *)1);
-		else if (str[0] == 'r')
-			pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&WriteCSV, (void *)0);
-		else if (str[0] == 'c'){
-			err = pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, "3 1 test");
-			if (err<0) printf("error: %s", strerror(errno));
-		}
-			
-	}
-}
-
 void *WriteCSV(void *parm)
 {
-	int LF = (int *)parm;
+	Radar_ABData_t *ABData;
+	ABData = (Radar_ABData_t *)parm;
+	
 	char filename[128];
 	FILE *fp;
 	M0_RADAR_DATA_FRAME data;
 
 	GetCSVName(filename);
-	fp = fopen(filename, "w+");
+	fp = fopen(filename, "a+");
+	fprintf(fp, "RadarLR, Distance, Status, RadarLR, Distance, Status");
+	fclose(fp);
 
-	fprintf(fp, "RadarLR, X, Y, Z, Distance, Power");
-
-	while (str[0] != 's')
+	while (1)
 	{
-		data = LF ? M0_radarA.data : M0_radarB.data;
-
+		fp = fopen(filename, "a+");
 		fprintf(fp, "\n%d,%d,%d,%d,%d,%d",
-				data.L_R,
-				data.obj_position_X,
-				data.obj_position_Y,
-				data.obj_position_Z,
-				data.obj_distance_R,
-				data.power);
+				M0_radarA.data.L_R,
+				M0_radarA.data.obj_distance_R,
+				ABData->RadarA->Status,
+				
+				M0_radarB.data.L_R,
+				M0_radarB.data.obj_distance_R,
+				ABData->RadarB->Status);
 
 		printf("recording\n\r");
+		fclose(fp);
 		sleep(1);
 	};
 
-	fclose(fp);
-	printf("\n %sfile created\n\r", filename);
 	pthread_exit(NULL);
 	return 0;
 }
