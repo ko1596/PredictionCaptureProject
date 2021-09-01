@@ -18,7 +18,7 @@ extern Radar_Error Radar_GetObjectStatus(Radar_PredictionData_t *pPredictionData
 	if (Status == RADAR_ERROR_NONE)
 	{
 
-		if (data.obj_distance_R == 0 && pPredictionData->SpeedData.DeltaV == 0 && pPredictionData->SpeedData.DeltaX == 0)
+		if (data.parking_status == 0)
 			pPredictionData->Status = RADAR_PREDICTIONSTATUS_EMPTY;
 
 		else if (pPredictionData->SpeedData.DeltaV < -5)

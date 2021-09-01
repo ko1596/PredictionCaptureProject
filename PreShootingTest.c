@@ -22,19 +22,28 @@ void *WriteCSV(void *parm)
 
 	GetCSVName(filename);
 	fp = fopen(filename, "a+");
-	fprintf(fp, "RadarLR, Distance, Status, RadarLR, Distance, Status");
+	fprintf(fp, "Time, RadarLR, Distance,parking_status, Status, RadarLR, Distance, parking_status, Status");
 	fclose(fp);
 
 	while (1)
 	{
+		time_t now = time(NULL);
+		char timestr[32];
+		struct tm *newtime = localtime(&now);
+		memset(timestr,'\0', 32);
+		strftime(timestr, 128, "%H:%M:%S", newtime);
+
 		fp = fopen(filename, "a+");
-		fprintf(fp, "\n%d,%d,%d,%d,%d,%d",
+		fprintf(fp, "\n%s,%d,%d,%d,%d,%d,%d,%d,%d",
+				timestr,
 				M0_radarA.data.L_R,
 				M0_radarA.data.obj_distance_R,
+				M0_radarA.data.parking_status,
 				ABData->RadarA->Status,
 				
 				M0_radarB.data.L_R,
 				M0_radarB.data.obj_distance_R,
+				M0_radarB.data.parking_status,
 				ABData->RadarB->Status);
 
 		printf("recording\n\r");
