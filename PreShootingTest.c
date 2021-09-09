@@ -21,9 +21,11 @@ void *WriteCSV(void *parm)
 	M0_RADAR_DATA_FRAME data;
 
 	GetCSVName(filename);
+	chdir("/home/root/Samuel/test_programs/tmp/");
 	fp = fopen(filename, "a+");
 	fprintf(fp, "Time, RadarLR, Distance,parking_status, Status, RadarLR, Distance, parking_status, Status");
 	fclose(fp);
+	chdir("/");
 
 	while (1)
 	{
@@ -33,6 +35,7 @@ void *WriteCSV(void *parm)
 		memset(timestr,'\0', 32);
 		strftime(timestr, 128, "%H:%M:%S", newtime);
 
+		chdir("/home/root/Samuel/test_programs/tmp/");
 		fp = fopen(filename, "a+");
 		fprintf(fp, "\n%s,%d,%d,%d,%d,%d,%d,%d,%d",
 				timestr,
@@ -48,6 +51,7 @@ void *WriteCSV(void *parm)
 
 		printf("recording\n\r");
 		fclose(fp);
+		chdir("/");
 		sleep(1);
 	};
 
