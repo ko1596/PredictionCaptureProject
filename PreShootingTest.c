@@ -59,7 +59,7 @@ void GetCSVName(char *name)
 {
 	time_t now = time(NULL);
 	struct tm *newtime = localtime(&now);
-	strftime(name, 128, "%Y%m%d%H%M%S", newtime);
+	strftime(name, 128, "/home/root/Samuel/test_programs/tmp/%Y%m%d%H%M%S", newtime);
 	printf("\nCreating %s.csv file\n\r", name);
 	strcat(name, ".csv");
 }
