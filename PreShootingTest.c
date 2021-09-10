@@ -49,7 +49,7 @@ void *WriteCSV(void *parm)
 				M0_radarB.data.obj_distance_R,
 				M0_radarB.data.parking_status,
 				ABData->RadarB->Status,
-				ABData->Radarb->target);
+				ABData->RadarB->target);
 
 		printf("recording\n\r");
 		fclose(fp);
