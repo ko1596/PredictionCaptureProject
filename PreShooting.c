@@ -172,12 +172,13 @@ extern Radar_Error Radar_CleanData(Radar_PredictionData_t *pPredictionData)
 
 	if (pPredictionData->Status == RADAR_PREDICTIONSTATUS_EMPTY)
 	{
-		
+		printf("Radar_CleanData!!!!!!!!!!!!!!!!!\n\n\n\n\n\n\n");
 		pPredictionData->target = false;
 		if(pPredictionData->conter > 0 && pPredictionData->conter <= 4)
 			pPredictionData->conter++;
 		else if (pPredictionData->conter > 4 && pPredictionData->conter < 10)
 		{
+			printf("delete capture file!!! count: %2d\n\n\n\n\n\n\n",pPredictionData->conter);
 			Status = Radar_DeleteFile(pPredictionData->time);
 			pPredictionData->conter = 0;
 			memset(pPredictionData->time, 0, 30);
@@ -213,10 +214,18 @@ Radar_Error Radar_DeleteFile(char *filename)
 
 bool IsPreShoot(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data)
 {
+	printf("DETECT!!!!\n\n\n\n\n\n\n");
 	if (pPredictionData->Status == RADAR_PREDICTIONSTATUS_PARKING || pPredictionData->Status == RADAR_PREDICTIONSTATUS_COMING)
+	{
+		printf("IS Comeing OR PARKING!!!!!\n\n\n\n\n\n\n");
 		return data.L_R ?  data.obj_distance_R < LEFT_DETECT_DISTANCE : data.obj_distance_R < RIGHT_DETECT_DISTANCE;
+	}
 	else
+	{
+		printf("NOOOT Comeing OR PARKING!!!!!\n\n\n\n\n\n\n");
 		return false;
+	}
+		
 }
 
 extern Radar_Error Radar_PreShoot(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data)
@@ -229,6 +238,7 @@ extern Radar_Error Radar_PreShoot(Radar_PredictionData_t *pPredictionData, M0_RA
 	if (IsPreShoot(pPredictionData, data) && pPredictionData->target == false)
 		if (data.L_R)
 		{
+			printf("LEFT CAPTUR!!!!!!!!\n\n\n\n\n\n\n\n\n\n");
 			strcat(pPredictionData->filename, LEFT_PICTURE_AMOUNT);
 			strftime(pPredictionData->time, 128, "%Y%m%d%H%M%S_LEFT", newtime);
 			strcat(pPredictionData->filename, pPredictionData->time);
@@ -239,6 +249,7 @@ extern Radar_Error Radar_PreShoot(Radar_PredictionData_t *pPredictionData, M0_RA
 		}
 		else
 		{
+			printf("RIGHT CAPTUR!!!!!!!!\n\n\n\n\n\n\n\n\n\n");
 			strcat(pPredictionData->filename, RIGHT_PICTURE_AMOUNT);
 			strftime(pPredictionData->time, 128, "%Y%m%d%H%M%S_RIGHT", newtime);
 			strcat(pPredictionData->filename, pPredictionData->time);
@@ -249,7 +260,9 @@ extern Radar_Error Radar_PreShoot(Radar_PredictionData_t *pPredictionData, M0_RA
 		}
 
 	if (pPredictionData->target)
-		pPredictionData->conter++;
+		printf("%d\n",++pPredictionData->conter);
+	
+		
 	return Status;
 }
 
