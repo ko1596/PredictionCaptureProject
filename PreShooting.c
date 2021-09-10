@@ -9,9 +9,38 @@
 ******************************************************************************
 */
 /* Includes ------------------------------------------------------------------*/
-#include "PreShooting.h"
+//#include "PreShooting_header.h"
+#include "All_Header.h"
 
-extern Radar_Error Radar_GetObjectStatus(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data)
+
+int IsCapture(M0_RADAR_FRAME *radar_data)
+{
+	return radar_data->data.L_R ? Radar_PreShoot(pPredictionDataA, radar_data->data) : Radar_PreShoot(pPredictionDataB, radar_data->data);
+}
+
+int IsDelete(M0_RADAR_FRAME *radar_data)
+{
+	return radar_data->data.L_R ? PredictionDataA.delete_file_flag : PredictionDataB.delete_file_flag;
+}
+
+Radar_Error Radar_Hanlder(void)
+{
+	Radar_Error Status = RADAR_ERROR_NONE;
+	Status = Radar_GetObjectSpeedData(pPredictionDataA, M0_AllDevStatus.radar_A.data);
+	Status = Radar_GetObjectSpeedData(pPredictionDataB, M0_AllDevStatus.radar_B.data);
+
+	Status = Radar_GetObjectStatus(pPredictionDataA, M0_AllDevStatus.radar_A.data);
+	Status = Radar_GetObjectStatus(pPredictionDataB, M0_AllDevStatus.radar_B.data);	
+
+	Status = Radar_CleanData(pPredictionDataA);
+	Status = Radar_CleanData(pPredictionDataB);
+
+	Status = Radar_PrintData(pPredictionDataA, M0_AllDevStatus.radar_A.data);
+	Status = Radar_PrintData(pPredictionDataB, M0_AllDevStatus.radar_B.data);
+    return Status;
+}
+
+Radar_Error Radar_GetObjectStatus(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data)
 {
 	Radar_Error Status = RADAR_ERROR_NONE;
 
@@ -40,7 +69,7 @@ extern Radar_Error Radar_GetObjectStatus(Radar_PredictionData_t *pPredictionData
 	return Status;
 }
 
-extern Radar_Error Radar_GetObjectSpeedData(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data)
+Radar_Error Radar_GetObjectSpeedData(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data)
 {
 	Radar_Error Status = RADAR_ERROR_NONE;
 
@@ -64,30 +93,7 @@ extern Radar_Error Radar_GetObjectSpeedData(Radar_PredictionData_t *pPredictionD
 	return Status;
 }
 
-void *Radar_TakePicture(void *parm)
-{
-	Radar_Error Status = RADAR_ERROR_NONE;
-	char path[30] = "./capture.sh";
-	char sysCmdBuf[256];
-	char *argc = (char *)parm;
-	char blank[1] = " ";
-	strcat(path, blank);
-	strcat(path, argc);
-
-	printf("%s\n\r", path);
-
-	if (Status == RADAR_ERROR_NONE)
-	{
-		bzero(sysCmdBuf, 256);
-		sprintf(sysCmdBuf, path);
-		system(sysCmdBuf);
-		usleep(20000);
-	}
-
-	pthread_exit(0);
-}
-
-extern Radar_Error Radar_PrintData(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data)
+Radar_Error Radar_PrintData(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data)
 {
 	Radar_Error Status = RADAR_ERROR_NONE;
 
@@ -143,108 +149,77 @@ extern Radar_Error Radar_PrintData(Radar_PredictionData_t *pPredictionData, M0_R
 	return Status;
 }
 
-extern Radar_Error Radar_InitData(Radar_PredictionData_t *pPredictionData)
+Radar_Error Radar_InitPredictionData(Radar_PredictionData_t *pPredictionData)
 {
-	printf("data initialized\n\r");
 	Radar_Error Status = RADAR_ERROR_NONE;
 	pPredictionData->SpeedData.DeltaV = 0;
 	pPredictionData->SpeedData.DeltaX = 0;
 	pPredictionData->SpeedData.InitialDistance = 0;
 	pPredictionData->SpeedData.InitialSpeed = 0;
 	pPredictionData->Status = RADAR_PREDICTIONSTATUS_INVALID;
-	pPredictionData->target = false;
-	pPredictionData->captured = false;
+	pPredictionData->target = 0;
+	pPredictionData->delete_file_flag = 0;
 	pPredictionData->conter = 0;
 	memset(pPredictionData->filename, 0, 30);
-	memset(pPredictionData->time, 0, 30);
 	return Status;
 }
 
-extern Radar_Error Radar_CleanData(Radar_PredictionData_t *pPredictionData)
+Radar_Error Radar_Initialization(void)
 {
 	Radar_Error Status = RADAR_ERROR_NONE;
+	pPredictionDataA = &PredictionDataA;
+	pPredictionDataB = &PredictionDataB;
+	Status = Radar_InitPredictionData(pPredictionDataA);
+	Status = Radar_InitPredictionData(pPredictionDataB);
+	return Status;
+}
 
+Radar_Error Radar_CleanData(Radar_PredictionData_t *pPredictionData)
+{
+	Radar_Error Status = RADAR_ERROR_NONE;
+	pPredictionData->delete_file_flag = 0;
 	if (pPredictionData->Status == RADAR_PREDICTIONSTATUS_EMPTY)
 	{
-		
-		pPredictionData->target = false;
+		pPredictionData->target = 0;
 		if(pPredictionData->conter > 0 && pPredictionData->conter <= 4)
 			pPredictionData->conter++;
 		else if (pPredictionData->conter > 4 && pPredictionData->conter < 10)
 		{
-			Status = Radar_DeleteFile(pPredictionData->time);
 			pPredictionData->conter = 0;
-			memset(pPredictionData->time, 0, 30);
+			pPredictionData->delete_file_flag = 1;
 		}
 		else
 		{
 			pPredictionData->conter = 0;
-			memset(pPredictionData->time, 0, 30);
 		}
 
 		memset(pPredictionData->filename, 0, 30);
-		
-
 	}
 
-	if (pPredictionData->conter > 4)
-		pPredictionData->captured = true;
-	else
-		pPredictionData->captured = false;
-
 	return Status;
 }
 
-Radar_Error Radar_DeleteFile(char *filename)
-{
-	Radar_Error Status = RADAR_ERROR_NONE;
-	char delpath[40] = SAVE_PICTURE_PATH;
-	strcat(delpath, filename);
-	system(delpath);
-	printf("It's too short delete %s\n\r", filename);
-	return Status;
-}
 
-bool IsPreShoot(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data)
+int IsPreShoot(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data)
 {
 	if (pPredictionData->Status == RADAR_PREDICTIONSTATUS_PARKING || pPredictionData->Status == RADAR_PREDICTIONSTATUS_COMING)
 		return data.L_R ?  data.obj_distance_R < LEFT_DETECT_DISTANCE : data.obj_distance_R < RIGHT_DETECT_DISTANCE;
 	else
-		return false;
+		return 0;
 }
 
-extern Radar_Error Radar_PreShoot(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data)
+int Radar_PreShoot(Radar_PredictionData_t *pPredictionData, M0_RADAR_DATA_FRAME data)
 {
-	time_t now = time(NULL);
-	struct tm *newtime = localtime(&now);
-	Radar_Error Status = RADAR_ERROR_NONE;
-	int err;
-
-	if (IsPreShoot(pPredictionData, data) && pPredictionData->target == false)
-		if (data.L_R)
-		{
-			strcat(pPredictionData->filename, LEFT_PICTURE_AMOUNT);
-			strftime(pPredictionData->time, 128, "%Y%m%d%H%M%S_LEFT", newtime);
-			strcat(pPredictionData->filename, pPredictionData->time);
-			err = pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, pPredictionData->filename);
-			if (err != 0)
-				printf("\ncan't create thread :[%s]", strerror(err));
-			pPredictionData->target = true;
-		}
-		else
-		{
-			strcat(pPredictionData->filename, RIGHT_PICTURE_AMOUNT);
-			strftime(pPredictionData->time, 128, "%Y%m%d%H%M%S_RIGHT", newtime);
-			strcat(pPredictionData->filename, pPredictionData->time);
-			err = pthread_create(&thread_uartA53M0_Tx, NULL, (void *)&Radar_TakePicture, pPredictionData->filename);
-			if (err != 0)
-				printf("\ncan't create thread :[%s]", strerror(err));
-			pPredictionData->target = true;
-		}
-
+	if (IsPreShoot(pPredictionData, data) && pPredictionData->target == 0)
+	{
+		pPredictionData->target = 1;
+		return 1;
+	}
+		
 	if (pPredictionData->target)
 		pPredictionData->conter++;
-	return Status;
+		
+	return 0;
 }
 
 /************************ (C) COPYRIGHT Joey Ke *****END OF FILE****/

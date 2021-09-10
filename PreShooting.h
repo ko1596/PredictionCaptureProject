@@ -11,104 +11,69 @@
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef PRESHOOTING_H
 #define PRESHOOTING_H
-  /* Includes ------------------------------------------------------------------*/
-#include <time.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <unistd.h>
-#include <stdbool.h>
-#include <pthread.h>
-#include "../Ta5320G_TIMER/m0All_Header.h"
 
-#define   INT8       int8_t
-#define   INT16      int16_t
-#define   INT32      int32_t
-
-#define LEFT_DETECT_DISTANCE           15
-#define RIGHT_DETECT_DISTANCE          30
-#define LEFT_PICTURE_AMOUNT            "3 1 "
-#define RIGHT_PICTURE_AMOUNT           "3 0 "
-#define SAVE_PICTURE_PATH              "rm -r /home/root/pic/"
-
-#define PRINTLF(LF) printf("--------------------------%s--------------------------\n\r",#LF)
-
-#define RADAR_PRINT               1
-#define RADAR_PRINT_SPEED					1
-#define RADAR_PRINT_XYZ	 	  			1
-#define RADAR_PRINT_STATUS        1
-
-/** @defgroup Radar_define_Error_group Error and Warning code returned by API
- *  The following DEFINE are used to identify the PAL ERROR
- *  @{
- */
-typedef int8_t Radar_Error;
-
-#define RADAR_ERROR_NONE                        ((Radar_Error)  0)
-#define RADAR_ERROR_INVALID_STATU               ((Radar_Error) - 1)       /*!< Warning invalid status*/
-#define RADAR_ERROR_FILE_NOT_EXIST              ((Radar_Error) - 2)       /*!< The file not exist when opening file*/
-#define RADAR_ERROR_WORNG_DISTANCE              ((Radar_Error) - 3)       /*!< The X and Y distance equal 0*/
-/** @} Radar_define_Error_group */
+  /* Global Var ------------------------------------------------------------------*/
+Radar_PredictionData_t PredictionDataA, PredictionDataB;
+Radar_PredictionData_t *pPredictionDataA, *pPredictionDataB;
 
 
-/** @defgroup Radar_PredictionStatus_group Defines Prediction Status
- *  Defines all possible prediction status mode
- *  @{
- */
-typedef uint8_t Radar_PredictionStatus;
 
-#define RADAR_PREDICTIONSTATUS_COMING        ((Radar_PredictionStatus)  0)
-#define RADAR_PREDICTIONSTATUS_LEAVING       ((Radar_PredictionStatus)  1)
-#define RADAR_PREDICTIONSTATUS_PARKING       ((Radar_PredictionStatus)  3)
-#define RADAR_PREDICTIONSTATUS_PARKED        ((Radar_PredictionStatus)  4)
-#define RADAR_PREDICTIONSTATUS_EMPTY         ((Radar_PredictionStatus)  5)
-#define RADAR_PREDICTIONSTATUS_INVALID       ((Radar_PredictionStatus)  6)
-/** @} Radar_PredictionStatus_group */
 
+/* Use function beginning --------------------------------------------------------*/
 
 /**
- * @struct  Radar_ObjectSpeedData_t
- * @brief   One Speed measurement data for each target.
- *
- */
-typedef struct Radar_ObjectSpeedData_t
-{
-  INT16 InitialDistance;
-    /*!< Distance from the beginning (10cm)*/
-  INT16 InitialSpeed;
-    /*!< Speed from the beginning (10cm/s)*/
-  INT16 DeltaX;
-		/*!< Distance variation  */
-  INT16 DeltaV;
-    /*!< Speed variation   */ 
-} Radar_ObjectSpeedData_t;
-
-/**
- * @struct  Radar_PredictionData_t
+ * @brief Initial all of the data and status
  * 
- * @brief Structure for storing the set of prediction results
+ * @return Radar_Error 
  */
-typedef struct Radar_PredictionData_t
-{
-  Radar_ObjectSpeedData_t SpeedData;       /*!< all possible prediction status mode>*/
-  Radar_PredictionStatus Status;           /*!< One Speed measurement data for each target.*/
-  bool target;                             /*!< Start capture thread.>*/
-  bool captured;                           /*!< Determine whether the photo has been taken > */
-  int conter;                              /*!< Calculate the time after startup.*/
-  char filename[30];                       /*!< File full path and file name*/
-  char time[30];                           /*!< Use time as the name of the current folder */
-} Radar_PredictionData_t;
+Radar_Error Radar_Initialization(void);
 
-typedef struct Radar_ABData_t
-{
-  Radar_PredictionData_t *RadarA;
-  Radar_PredictionData_t *RadarB;
-} Radar_ABData_t;
+/**
+ * @brief run all the preshooting functions
+ *
+ * @return  RADAR_ERROR_NONE              Success
+ * @return  "Other error code"            See ::Radar_Error
+ */
+Radar_Error Radar_Hanlder(void);
 
+/**
+ * @brief Whether to transmit camera signal
+ * 
+ * @return int 
+ */
+int IsCapture(M0_RADAR_FRAME *radar_data);
+
+/**
+ * @brief Whether to transfer deleted files
+ * 
+ * @return int 
+ */
+int IsDelete(M0_RADAR_FRAME *radar_data);
+
+/* Use function end ------------------------------------------------------------------*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Private function start ------------------------------------------------------------------*/
 /**
  * @brief Return the radar status
  *
  * @param   pPredictionData               all of the prediction data 
- * @param data                            for radar distance
+ * @param   data                          for radar distance
  * @return  RADAR_ERROR_NONE              Success
  * @return  "Other error code"            See ::Radar_Error
  */
@@ -128,12 +93,6 @@ Radar_Error Radar_GetObjectSpeedData(
     M0_RADAR_DATA_FRAME data);
 
 /**
- * @brief Run the take photo bash that named cap.sh in /home/root/
- * 
- */
-void *Radar_TakePicture(void *parm);
-
-/**
  * @brief Print all data of the prediction status and DeltaV and DeltaX
  * 
  * @param pPredictionData    all of the prediction data
@@ -150,7 +109,7 @@ Radar_Error Radar_PrintData(
  * @param pPredictionData all of the prediction data
  * @return Radar_Error 
  */
-Radar_Error Radar_InitData(Radar_PredictionData_t *pPredictionData);
+Radar_Error Radar_InitPredictionData(Radar_PredictionData_t *pPredictionData);
 
 /**
  * @brief Clear the data detected this time 
@@ -161,20 +120,13 @@ Radar_Error Radar_InitData(Radar_PredictionData_t *pPredictionData);
 Radar_Error Radar_CleanData(Radar_PredictionData_t *pPredictionData);
 
 /**
- * @brief delete the worng picture file
- * 
- * @param filename the floder name
- */
-Radar_Error Radar_DeleteFile(char *filename);
-
-/**
  * @brief prediction shooting
  * 
  * @param pPredictionData                 all of the prediction data 
  * @param data                            for radar distance
- * @return bool -						  prediction shooting resulte
+ * @return int -						  prediction shooting resulte
  */
-bool IsPreShoot(
+int IsPreShoot(
     Radar_PredictionData_t *pPredictionData, 
     M0_RADAR_DATA_FRAME data);
 
@@ -185,8 +137,10 @@ bool IsPreShoot(
  * @param data                            for radar distance
  * @return Radar_Error 
  */
-Radar_Error Radar_PreShoot(
+int Radar_PreShoot(
     Radar_PredictionData_t *pPredictionData, 
     M0_RADAR_DATA_FRAME data);
+/* Private function end ------------------------------------------------------------------*/
+
 #endif  /* PRESHOOTING_H */
 /************************ (C) COPYRIGHT Joey Ke *****END OF FILE****/
