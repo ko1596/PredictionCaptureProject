@@ -66,6 +66,7 @@ extern Radar_Error Radar_GetObjectSpeedData(Radar_PredictionData_t *pPredictionD
 
 void *Radar_TakePicture(void *parm)
 {
+	FILE *fp;
 	Radar_Error Status = RADAR_ERROR_NONE;
 	char path[30] = "capture.sh";
 	char sysCmdBuf[256];
@@ -79,9 +80,12 @@ void *Radar_TakePicture(void *parm)
 	if (Status == RADAR_ERROR_NONE)
 	{
 		chdir("/home/root/Samuel/test_programs/");
-		bzero(sysCmdBuf, 256);
-		sprintf(sysCmdBuf, path);
-		system(sysCmdBuf);
+		// bzero(sysCmdBuf, 256);
+		// sprintf(sysCmdBuf, path);
+		// system(sysCmdBuf);
+		fp = popen(path,"r");
+		printf("%s\n\n\n",path);
+		pclose(fp);
 		chdir("/");
 		usleep(20000);
 	}
