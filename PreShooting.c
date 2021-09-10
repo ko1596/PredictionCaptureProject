@@ -78,7 +78,7 @@ void *Radar_TakePicture(void *parm)
 
 	if (Status == RADAR_ERROR_NONE)
 	{
-		chdir("/home/root/Samuel/test_programs/tmp/");
+		chdir("/home/root/Samuel/test_programs/");
 		bzero(sysCmdBuf, 256);
 		sprintf(sysCmdBuf, path);
 		system(sysCmdBuf);
