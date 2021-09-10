@@ -68,7 +68,7 @@ void *Radar_TakePicture(void *parm)
 {
 	FILE *fp;
 	Radar_Error Status = RADAR_ERROR_NONE;
-	char path[30] = "capture.sh";
+	char path[1000] = "/home/root/Samuel/test_programs/capture.sh";
 	char sysCmdBuf[256];
 	char *argc = (char *)parm;
 	char blank[1] = " ";
