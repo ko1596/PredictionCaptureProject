@@ -135,7 +135,7 @@ extern Radar_Error Radar_PrintData(Radar_PredictionData_t *pPredictionData, M0_R
 			data.obj_position_Y,
 			data.obj_position_Z,
 			data.obj_distance_R,
-			data.power);
+			data.CarChange_status);
 	#endif
 
 	printf("--------------------------------------------------------\n\r");
