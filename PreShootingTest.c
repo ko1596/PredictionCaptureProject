@@ -23,7 +23,7 @@ void *WriteCSV(void *parm)
 	GetCSVName(filename);
 	chdir("/home/root/Samuel/test_programs/tmp/");
 	fp = fopen(filename, "a+");
-	fprintf(fp, "Time, RadarLR, Distance,parking_status, Status, RadarLR, Distance, parking_status, Status");
+	fprintf(fp, "Time, RadarLR, Distance,parking_status, Status, target, , RadarLR, Distance, parking_status, Status, target");
 	fclose(fp);
 	chdir("/");
 
@@ -37,17 +37,19 @@ void *WriteCSV(void *parm)
 
 		chdir("/home/root/Samuel/test_programs/tmp/");
 		fp = fopen(filename, "a+");
-		fprintf(fp, "\n%s,%d,%d,%d,%d,%d,%d,%d,%d",
+		fprintf(fp, "\n%s,%d,%d,%d,%d,,%d,%d,%d,%d",
 				timestr,
 				M0_radarA.data.L_R,
 				M0_radarA.data.obj_distance_R,
 				M0_radarA.data.parking_status,
 				ABData->RadarA->Status,
+				ABData->RadarA->target,
 				
 				M0_radarB.data.L_R,
 				M0_radarB.data.obj_distance_R,
 				M0_radarB.data.parking_status,
-				ABData->RadarB->Status);
+				ABData->RadarB->Status,
+				ABData->Radarb->target);
 
 		printf("recording\n\r");
 		fclose(fp);

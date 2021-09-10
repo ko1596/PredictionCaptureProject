@@ -67,7 +67,7 @@ extern Radar_Error Radar_GetObjectSpeedData(Radar_PredictionData_t *pPredictionD
 void *Radar_TakePicture(void *parm)
 {
 	Radar_Error Status = RADAR_ERROR_NONE;
-	char path[30] = "./capture.sh";
+	char path[30] = "capture.sh";
 	char sysCmdBuf[256];
 	char *argc = (char *)parm;
 	char blank[1] = " ";
